@@ -17,17 +17,17 @@ class AccountUpdate(UpdateView):
     model = Account
     fields = "__all__"
 
-    class AccountDelete(DeleteView):
-        model = Account
-        success_url = "/"
+class AccountDelete(DeleteView):
+    model = Account
+    success_url = "/"
 
 
 class AccountDetail(DetailView):
     model = Account
 
-    class AccountList(ListView):
-        model = Account
-        fields = "__all__"
+class AccountList(ListView):
+    model = Account
+    fields = "__all__"
 
 class TransactionCreate(CreateView):
     model = Transaction
@@ -38,14 +38,13 @@ class TransactionUpdate(UpdateView):
     model = Transaction
     fields = "__all__"
 
-    class TransactionDelete(DeleteView):
-        model = Transaction
-        success_url = "/"
-
+class TransactionDelete(DeleteView):
+    model = Transaction
+    success_url = "/"
 
 class TransactionDetail(DetailView):
     model = Transaction
 
-    class TransactionList(ListView):
-        model = Transaction
-        fields = "__all__"
+class TransactionList(ListView):
+    model = Transaction
+    fields = "__all__"
