@@ -33,3 +33,40 @@ Casheroo is a user-friendly personal finance app that centralizes your financial
 ### Routes
 
 ![](ui/cash8.jpg)
+
+
+# Technology
+
+* Django
+* Postgres
+* Tailwind
+
+# MPV
+
+## Views
+* Account View
+* Add/Edit Account View
+* Add/Edit Transaction View
+* Index view
+
+## Features
+
+* User can create and edit accounts
+* User can create and edit transactions
+* User can view an index view which can show one, multiple, or all accounts transactions and a running balance much like bank account view with controls as far as what accounts and duration to show. Each line will be clickable and show additional controls to edit/delete forms with controls for only one shown at once.
+
+# Stretch Goals
+## Features
+* Show upcoming expenses
+* Create recurring expenses
+* Edit both Recurring and single transactions.
+* Show a warning on top of index if account or all accounts transactions are projected to take balance which a user can click and scroll to the line where balance goes below zero.
+
+# Icebox
+## Views
+* Calendar view
+## Features
+* Banking API
+* Categorize Transactions
+* Automatic categorization
+* Budget help
