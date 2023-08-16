@@ -28,4 +28,5 @@ urlpatterns = [
         views.TransactionUpdate.as_view(),
         name="transaction_update",
     ),
+   path('accounts/signup/', views.signup, name='signup'), 
 ]
