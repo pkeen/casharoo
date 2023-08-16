@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Casharoo</title>
+</head>
+<body>
+    <div class="bg-lime-50 text-emerald-900" >
+        <div class="container mx-auto px-4 py-2">
+            <div class="flex items-center justify-between">
+                <!-- Logo / Branding -->
+                <div>
+                <a href="#" class="text-2xl font-semibold">Casharoo</a>
+                </div>
+        
+                <!-- Navbar links -->
+                <div class="hidden md:flex space-x-4">
+                <a href="#" class="text-emerald-800 hover:text-emerald-600">Home</a>
+                <a href="#" class="text-emerald-800 hover:text-emerald-600">About</a>
+                <a href="#" class="text-emerald-800 hover:text-emerald-600">Services</a>
+                <a href="#" class="text-emerald-800 hover:text-emerald-600">Contact</a>
+                </div>
+        
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                <button class="mobile-menu-button">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+                </div>
+            </div>
+        
+            <!-- Mobile Menu -->
+            <div class="mobile-menu hidden md:hidden">
+                <a href="#" class="block py-2 px-4 text-gray-300 hover:text-white">Home</a>
+                <a href="#" class="block py-2 px-4 text-gray-300 hover:text-white">About</a>
+                <a href="#" class="block py-2 px-4 text-gray-300 hover:text-white">Services</a>
+                <a href="#" class="block py-2 px-4 text-gray-300 hover:text-white">Contact</a>
+            </div>
+        </div>
+    </div>
+
+    {% block content %}
+
+    {% endblock %}
+      
+    <script>
+        const mobileMenuButton = document.querySelector('.mobile-menu-button');
+        const mobileMenu = document.querySelector('.mobile-menu');
+    
+        mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+      
+</body>
+</html>
