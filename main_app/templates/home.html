@@ -1,19 +1,27 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<h1>Cash-a-roo</h1>
-<div>
-    <img width=400 src={% static "images/casharooWebLarge.png" %}>
-    <div>
-        <h2>Pocket those pennies and
-            leap into savings! 🌟</h2>
-        <p>Bounce between budgets without breaking a sweat. Casharoo’s got your back, mate! </p>
-        <p> 🦘 Stay on top of your bills with a hop, skip, and a jump.</p>
-        <p> 🌳 Plant seeds for your future savings, and watch them grow.</p>
-        <p> 🎨 Customize your expense terrain; make it as colorful as the outback sunset.</p>
+<div class="flex flex-col items-center">
+    <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Cash-a-roo</h1>
+
+    <div class="flex">
+        <img width=400 src={% static "images/casharooWebLarge.png" %}>
+        <section class="flex-row self-center">
+            <h2>Pocket those pennies and
+                leap into savings! 🌟</h2>
+            <p>Bounce between budgets without breaking a sweat. Casharoo’s got your back, mate! </p>
+            <p> 🦘 Stay on top of your bills with a hop, skip, and a jump.</p>
+            <p> 🌳 Plant seeds for your future savings, and watch them grow.</p>
+            <p> 🎨 Customize your expense terrain; make it as colorful as the outback sunset.</p>
+        </section>
+    </div>
+
+    <section class="self-center">
         <p>Dive into Casharoo – where your finances find their flow and fun jumps in!</p>
         <p>Casharoo: Making cents (and dollars) of your expenses. 🎉"</p>
-    </div>
+<a href = class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+  Get Started
+</a>
+    </section>
 </div>
-<button>Start Here</button>
-#{% endblock %}
+{% endblock %}
