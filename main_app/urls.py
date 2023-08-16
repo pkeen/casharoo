@@ -13,4 +13,19 @@ urlpatterns = [
         "accounts/<int:pk>/delete", views.AccountDelete.as_view(), name="account_delete"
     ),
     path("accounts/<int:pk>/", views.AccountDetail.as_view(), name="account_detail"),
+    path(
+        "accounts/<int:pk>/transaction/create/",
+        views.TransactionCreate.as_view(),
+        name="transaction_create",
+    ),
+    path(
+        "accounts/<int:pk>/transaction/delete/",
+        views.TransactionDelete.as_view(),
+        name="transaction_delete",
+    ),
+    path(
+        "accounts/<int:pk>/transaction/update/",
+        views.TransactionUpdate.as_view(),
+        name="transaction_update",
+    ),
 ]
