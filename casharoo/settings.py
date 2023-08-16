@@ -76,8 +76,8 @@ WSGI_APPLICATION = "casharoo.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "casharool",
+        "ENGINE": "django.db.backends.postgres",
+        "NAME": "casharoo",
     }
 }
 
