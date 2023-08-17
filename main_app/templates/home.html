@@ -2,26 +2,61 @@
 {% load static %}
 {% block content %}
 <div class="flex flex-col items-center">
-    <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Cash-a-roo</h1>
+    {% if user.is_authenticated %}
+        <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Welcome back, {{ user.username }}!</h1>
 
-    <div class="flex">
-        <img width=400 src={% static "images/casharooWebLarge.png" %}>
-        <section class="flex-row self-center">
-            <h2>Pocket those pennies and
-                leap into savings! 🌟</h2>
-            <p>Bounce between budgets without breaking a sweat. Casharoo’s got your back, mate! </p>
-            <p> 🦘 Stay on top of your bills with a hop, skip, and a jump.</p>
-            <p> 🌳 Plant seeds for your future savings, and watch them grow.</p>
-            <p> 🎨 Customize your expense terrain; make it as colorful as the outback sunset.</p>
-        </section>
-    </div>
+        <h2 class="mt-4 text-2xl font-medium leading-tight text-primary">Total Current Balance:</h2>
+        <h2 class="mt-2 text-4xl font-bold leading-tight text-primary">${{ total_balance }}</h2>
 
-    <section class="self-center">
-        <p>Dive into Casharoo – where your finances find their flow and fun jumps in!</p>
-        <p>Casharoo: Making cents (and dollars) of your expenses. 🎉"</p>
-    </section>
-    <a href="/accounts/signup" class="{{button_classes}}">
-  Get Started
-</a>
+        <div class="mt-4">
+            <h2 class="text-2xl font-medium leading-tight text-primary">Recent Transactions:</h2>
+            <table class="table-auto mt-2 w-full">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Date</th>
+                        <th class="px-4 py-2">Description</th>
+                        <th class="px-4 py-2">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions|dictsortreversed:"date" %}
+                        <tr>
+                            <td class="px-4 py-2">{{ transaction.date }}</td>
+                            <td class="px-4 py-2">{{ transaction.title }}</td>
+                            <td class="px-4 py-2">${{ transaction.amount }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+      
+        <a href="/accounts/" class="btn-main mt-4">
+            View Your Accounts
+        </a>
+    {% else %}
+
+      <div class="flex flex-col items-center">
+          <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Cash-a-roo</h1>
+
+          <div class="flex">
+              <img width=400 src={% static "images/casharooWebLarge.png" %}>
+              <section class="flex-row self-center">
+                  <h2>Pocket those pennies and
+                      leap into savings! 🌟</h2>
+                  <p>Bounce between budgets without breaking a sweat. Casharoo’s got your back, mate! </p>
+                  <p> 🦘 Stay on top of your bills with a hop, skip, and a jump.</p>
+                  <p> 🌳 Plant seeds for your future savings, and watch them grow.</p>
+                  <p> 🎨 Customize your expense terrain; make it as colorful as the outback sunset.</p>
+              </section>
+          </div>
+
+          <section class="self-center">
+              <p>Dive into Casharoo – where your finances find their flow and fun jumps in!</p>
+              <p>Casharoo: Making cents (and dollars) of your expenses. 🎉"</p>
+          </section>
+          <a href="/accounts/signup" class="{{button_classes}}">
+        Get Started
+      </a>
+    {% endif %}
 </div>
 {% endblock %}
