@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 
+
 def home(request):
     return render(request, "home.html")
 
@@ -18,7 +19,7 @@ class AccountCreate(CreateView):
 
 class AccountUpdate(UpdateView):
     model = Account
-    fields = "__all__"
+    fields = ['name']
 
 
 class AccountDelete(DeleteView):

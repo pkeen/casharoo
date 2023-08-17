@@ -15,7 +15,8 @@
       </div>
     </div>
     <div class="mt-6">
-      <a href="" class="text-emerald-600 hover:underline">Edit Account</a>
+      <a href="{% url 'account_update' account.id %}" class="text-emerald-600 hover:underline">Edit Account</a>
+      <a href="{% url 'account_delete' account.id %}">Delete</a>
     </div>
   </div>
 </div>
@@ -26,7 +27,7 @@
         <li class="mb-2">
           <span class="font-semibold">{{ transaction.title }}</span>
           <span class="text-gray-600 ml-2">{{ transaction.date }}</span>
-          <span class="ml-2">{{ transaction.amount }}</span>
+          <span class="ml-2">${{ transaction.amount }}</span>
         </li>
       {% endfor %}
     </ul>

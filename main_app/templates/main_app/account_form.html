@@ -3,7 +3,23 @@
 {% block content %}
 
 <div class="container flex items-center justify-center m-10">
+  {% if object %}  
+    <form action="" method="POST">
     
+        {% csrf_token %}
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="flex">
+                <label for="name">Name</label>
+            </div>
+            <input type="text" id="name" name="name" class="border-solid border-2 border-gray-300 rounded-md">
+            <div class="col-span-2 flex justify-center">
+                <button class="btn p-1 px-3 rounded-full bg-emerald-800 text-white" type="submit">Submit Changes</button> 
+            </div>
+        
+        </div>
+  {% else %}
+    </form>
     <form action="" method="POST">
     
         {% csrf_token %}
@@ -19,7 +35,7 @@
             <input type="number" id="balance" name="balance" class="border-solid border-2 border-gray-300 rounded-md">
             
             <div class="col-span-2 flex justify-center">
-                <button class="btn p-1 px-3 rounded-full bg-emerald-800 text-white" type="submit">Add Account</button>
+                <button class="btn p-1 px-3 rounded-full bg-emerald-800 text-white" type="submit">Add Account</button> 
             </div>
         
         </div>
@@ -27,6 +43,6 @@
     </form>
 
 </div>
-
+  {% endif %}
 
 {% endblock %}
