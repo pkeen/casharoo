@@ -59,12 +59,12 @@ class AccountList(ListView):
 class TransactionCreate(CreateView):
     model = Transaction
     fields = ["title","date", "amount", "category", "account", "processed"]
-    success_url = "/accounts/"
     def get_initial(self):
         initial = super().get_initial()
         account_id = self.kwargs.get('account_id')
         account = Account.objects.get(id=account_id)
         initial['account'] = Account.objects.get(id=account_id)
+        self.success_url = f"/accounts/{account_id}/"
         return initial
 
     def get_context_data(self, **kwargs):

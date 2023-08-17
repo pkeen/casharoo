@@ -18,12 +18,12 @@ urlpatterns = [
         name="transaction_create",
     ),
     path(
-        "accounts/<int:pk>/transaction/delete/",
+        "accounts/<int:account_id>/transaction/<int:transaction_id>delete/",
         views.TransactionDelete.as_view(),
         name="transaction_delete",
     ),
     path(
-        "accounts/<int:pk>/transaction/update/",
+        "accounts/<int:acount_id>/transaction/<int:transaction_id>update",
         views.TransactionUpdate.as_view(),
         name="transaction_update",
     ),
