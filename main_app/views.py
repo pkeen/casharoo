@@ -27,6 +27,16 @@ class AccountDelete(DeleteView):
 
 class AccountDetail(DetailView):
     model = Account
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Retrieve the list of transactions for the account
+        account = self.object
+        transaction_list = Transaction.objects.filter(account=account)
+
+        context['transaction_list'] = transaction_list
+        return context
 
 
 class AccountList(ListView):
