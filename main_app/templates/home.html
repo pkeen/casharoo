@@ -6,28 +6,32 @@
         <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Welcome back, {{ user.username }}!</h1>
 
         <h2 class="mt-4 text-2xl font-medium leading-tight text-primary">Total Current Balance:</h2>
-        <h2 class="mt-2 text-4xl font-bold leading-tight text-primary">${{ total_balance }}</h2>
+        <h2 class="mt-2 text-4xl font-bold leading-tight text-primary text-emerald-600">${{ total_balance }}</h2>
 
-        <div class="mt-4">
-            <h2 class="text-2xl font-medium leading-tight text-primary">Recent Transactions:</h2>
-            <table class="table-auto mt-2 w-full">
-                <thead>
-                    <tr>
-                        <th class="px-4 py-2">Date</th>
-                        <th class="px-4 py-2">Description</th>
-                        <th class="px-4 py-2">Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for transaction in transactions|dictsortreversed:"date" %}
-                        <tr>
-                            <td class="px-4 py-2">{{ transaction.date }}</td>
-                            <td class="px-4 py-2">{{ transaction.title }}</td>
-                            <td class="px-4 py-2">${{ transaction.amount }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="mt-8 w-full text-center">
+            <h2 class="text-2xl font-medium leading-tight text-primary text-center">Recent Transactions:</h2>
+            <div class="mt-2 w-full sm:w-3/4 lg:w-2/3">
+              <table class="table-auto mt-4 w-full">
+                  <thead>
+                      <tr>
+                          <th class="px-4 py-2">Date</th>
+                          <th class="px-4 py-2">Description</th>
+                          <th class="px-4 py-2">Account</th>
+                          <th class="px-4 py-2">Amount</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for transaction in transactions|dictsortreversed:"date" %}
+                          <tr class="{% cycle 'bg-gray-100' 'bg-white' %}">
+                              <td class="px-4 py-2">{{ transaction.date }}</td>
+                              <td class="px-4 py-2">{{ transaction.title }}</td>
+                              <td class="px-4 py-2">{{ transaction.account.name }}</td>
+                              <td class="px-4 py-2">${{ transaction.amount }}</td>
+                          </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+            </div>
         </div>
       
         <a href="/accounts/" class="btn-main mt-4">
