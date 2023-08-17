@@ -26,12 +26,11 @@
 
                 <!-- Navbar links -->
                 <div class="hidden md:flex space-x-4 items-center">
-                    <a href="/" class="nav-link">Home</a>
-                    <a href="#" class="nav-link">Accounts</a>
                     {% if user.is_authenticated %}
-                    <a href="accounts/logout/" class="text-emerald-800 hover:text-emerald-600 btn-main-sm">Logout</a>
+                    <a href="{% url 'account_list' %}" class="nav-link">Accounts</a>
+                    <a href="{% url 'logout' %}" class="text-emerald-800 hover:text-emerald-600 btn-main-sm">Logout</a>
                     {% else %}
-                    <a href="accounts/login/" class="text-emerald-800 hover:text-emerald-600 btn-main-sm">Login</a>
+                    <a href="{% url 'login' %}" class="text-emerald-800 hover:text-emerald-600 btn-main-sm">Login</a>
                     {% endif %}
                 </div>
 
@@ -50,12 +49,11 @@
 
             <!-- Mobile Menu -->
             <div class="mobile-menu hidden md:hidden">
-                <a href="/" class="block nav-link text-center">Home</a>
-                <a href="/" class="block nav-link text-center">Accounts</a>
                 {% if user.is_authenticated %}
-                <a href="accounts/logout/" class="block nav-link text-center">Logout</a>
+                <a href="{% url 'account_list' %}" class="block nav-link text-center">Accounts</a>
+                <a href="{% url 'logout' %}" class="block nav-link text-center">Logout</a>
                 {% else %}
-                <a href="accounts/login/" class="block nav-link text-center">Login</a>
+                <a href="{% url 'login' %}" class="block nav-link text-center">Login</a>
                 {% endif %}
             </div>
         </div>
