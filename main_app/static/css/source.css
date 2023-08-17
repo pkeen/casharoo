@@ -46,6 +46,18 @@
     @apply bg-yellow-500
 }
 
+.coin-lg {
+    display: inline-block;
+    text-indent: -9999px;
+    width: 2rem;
+    height: 2rem;
+    line-height: 1;
+    /* background: black; */
+    vertical-align: middle;
+    border-radius: 50%;
+    @apply bg-yellow-500
+}
+
 .navbar {
     @apply bg-lime-50 text-emerald-700 fixed w-full z-10;
 }
@@ -57,3 +69,44 @@
 .nav-link:hover {
     @apply text-emerald-600;
 }
+
+.headline {
+    @apply text-xl font-bold text-gray-800;
+}
+
+.img-container {
+    overflow: hidden;
+    height: 16rem;
+    display: flex;
+    justify-content: center;
+}
+
+/* Medium devices (768px and up) */
+@media (min-width: 768px) {
+    .img-container {
+        height: 28rem;
+    }
+}
+
+/* XL devices (1280px and up) */
+@media (min-width: 1280px) {
+    .img-container {
+        height: 42rem;
+    }
+}
+
+.img-main {
+    max-height: 100%;
+    width: auto;
+    display: block;
+}
+
+.splash {
+    @apply flex flex-col items-center container justify-center;
+}
+
+.splash-text {
+    @apply flex flex-col justify-around text-center;
+    min-height: 400px;
+}
+
