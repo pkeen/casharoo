@@ -63,7 +63,7 @@ class TransactionCreate(CreateView):
 
 class TransactionUpdate(UpdateView):
     model = Transaction
-    fields = "__all__"
+    fields = ["title","date", "amount", "category", "processed"]
 
 
 class TransactionDelete(DeleteView):

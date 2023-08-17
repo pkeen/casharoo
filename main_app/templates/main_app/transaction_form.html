@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="container flex items-center justify-center m-10">
+  {% if object %}
+  <h1>Edit Transaction</h1>
+  {% else %}
+  <h1>Create Transaction</h1>
+  {% endif %}
+    <form action="" method="POST">
+<table>
+        {% for field in form %}
+        <tr>
+            <td>{{ field.label_tag }}</td>
+            <td>{{ field|add_class:"input-class" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    </form>
+
+
+</div>
+
+{% endblock %}

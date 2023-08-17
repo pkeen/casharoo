@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="bg-gray-100 py-16">
+    <div class="container mx-auto text-center">
+      <h1 class="text-4xl font-semibold mb-4">Delete Transaction</h1>
+      <div class="bg-white shadow-lg rounded-lg p-6">
+        <h4 class="text-lg font-medium mb-4">Are you sure you want to delete your transaction: <span class="text-teal-500">{{transaction.title}}</span> account?</h4>
+        <form action="" method="POST">
+          {% csrf_token %}
+          <div class="flex justify-center">
+            <input type="submit" value="Yes - Delete!" class="btn bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-medium text-lg transition duration-300 mr-4">
+            <a href="{% url 'account_detail' transaction.account.id %}" class="btn bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg font-medium text-lg transition duration-300">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
