@@ -11,6 +11,25 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href = {% static "css/style.css" %}>
     <title>Casharoo</title>
+ <style>
+        @tailwind base;
+
+        @tailwind components;
+
+        /* applying utility classes to Bootstrap components */
+
+        .btn-primary {
+        @apply px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700;
+        }
+        .btn-success {
+        @apply px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700;
+        }
+        .btn-danger {
+        @apply px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700;
+        }
+
+        @tailwind utilities;
+ </style>
 </head>
 <body>
     <div class="bg-lime-50 text-emerald-900">
