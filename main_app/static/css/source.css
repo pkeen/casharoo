@@ -11,6 +11,16 @@
     @apply bg-emerald-700;
 }
 
+.btn-main-sm {
+    @apply bg-emerald-600 text-white font-bold py-1 px-4 rounded-full drop-shadow-md;
+}
+
+.btn-main-sm:hover {
+    @apply bg-emerald-700 text-slate-100;
+    color: white !important
+}
+
+
 .input-class {
     @apply shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight
 }
@@ -24,3 +34,26 @@
         @apply focus:border-emerald-700 focus:ring-green-500;
     }
 } */
+
+.coin {
+    display: inline-block;
+    text-indent: -9999px;
+    width: 1rem;
+    height: 1rem;
+    /* background: black; */
+    vertical-align: middle;
+    border-radius: 50%;
+    @apply bg-yellow-500
+}
+
+.navbar {
+    @apply bg-lime-50 text-emerald-700 fixed w-full z-10;
+}
+
+.nav-link {
+    @apply text-emerald-800;
+}
+
+.nav-link:hover {
+    @apply text-emerald-600;
+}
