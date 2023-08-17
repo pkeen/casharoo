@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1 class="text-3xl font-bold mb-6">Accounts</h1>
+<h1 class="text-3xl font-bold mb-6">Accounts <a href=""></a></h1>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   {% for account in account_list %}
     <a href="{% url 'account_detail' account.id %}" class="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300">
