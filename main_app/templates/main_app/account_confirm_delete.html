@@ -9,7 +9,7 @@
         <form action="" method="POST">
           {% csrf_token %}
           <div class="flex justify-center">
-            <input type="submit" value="Yes - Delete!" class="btn bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-medium text-lg transition duration-300 mr-4">
+            <input type="submit" value="Yes - Delete!" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-medium text-lg transition duration-300 mr-4">
             <a href="{% url 'account_detail' account.id %}" class="btn bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg font-medium text-lg transition duration-300">Cancel</a>
           </div>
         </form>

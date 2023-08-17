@@ -11,6 +11,10 @@
 <div  class="flex justify-center items-center m-10 items-center" >
     <form action="" method="POST">
         {% csrf_token %}
+        {{request}}
+{% with url_args=request.resolver_match.kwargs %}
+  Account ID: {{ url_args.account_id }}
+{% endwith %}
 <table>
         <tr>
             <td>{{ form.title.label_tag }}</td>
@@ -38,7 +42,7 @@
             <td>{{ form.processed }}</td>
         </tr>
     </table>
-    <button class="{{button_classes}}" type="submit">Submit</button>
+    <button class="btn-main" type="submit">Submit</button>
     </form>
 
 </div>
