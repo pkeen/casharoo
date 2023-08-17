@@ -4,12 +4,22 @@ from django.views.generic import ListView, DetailView
 from .models import Account, Transaction
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
+from django.db.models import Sum
 
 
 
 
 def home(request):
-    return render(request, "home.html")
+    # Calculate the total balance of all accounts
+    total_balance = Account.objects.aggregate(total_balance=Sum('balance'))['total_balance']
+
+    # Retrieve all transactions ordered by timestamp
+    transactions = Transaction.objects.order_by('date')
+    context = {
+        'total_balance': total_balance,
+        'transactions': transactions,
+    }
+    return render(request, "home.html", context)
 
 
 class AccountCreate(CreateView):
