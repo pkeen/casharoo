@@ -35,28 +35,38 @@
         </a>
     {% else %}
 
-      <div class="flex flex-col items-center">
-          <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Cash-a-roo</h1>
-
-          <div class="flex">
-              <img width=400 src={% static "images/casharooWebLarge.png" %}>
-              <section class="flex-row self-center">
-                  <h2>Pocket those pennies and
-                      leap into savings! 🌟</h2>
-                  <p>Bounce between budgets without breaking a sweat. Casharoo’s got your back, mate! </p>
-                  <p> 🦘 Stay on top of your bills with a hop, skip, and a jump.</p>
-                  <p> 🌳 Plant seeds for your future savings, and watch them grow.</p>
-                  <p> 🎨 Customize your expense terrain; make it as colorful as the outback sunset.</p>
-              </section>
-          </div>
-
-          <section class="self-center">
-              <p>Dive into Casharoo – where your finances find their flow and fun jumps in!</p>
-              <p>Casharoo: Making cents (and dollars) of your expenses. 🎉"</p>
-          </section>
-          <a href="/accounts/signup" class="{{button_classes}}">
-        Get Started
-      </a>
+        <section class="splash">
+            <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center text-emerald-700">
+                Cashar<span class="coin-lg">o</span><span class="coin-lg">o</span>
+            </h1>
+        
+            <div class="flex flex-col md:flex-row mt-4">
+        
+                <div class="img-container">
+                    <img class="img-main" src={% static "images/casharooWebLarge.png" %}>
+                </div>
+        
+                <section class="splash-text">
+                    <h2 class="headline">Pocket those pennies and leap into savings! 🌟</h2>
+                    <p class="text-gray-800">Bounce between budgets without breaking a sweat. Casharoo’s got your back, mate! </p>
+                    <ul class="text-left md:ps-20 text-gray-500">
+                        <li class="text-left">🦘 Stay on top of your bills with a hop, skip, and a jump.</li>
+                        <li>🌳 Plant seeds for your future savings, and watch them grow.</li>
+                        <li>🎨 Customize your expense terrain; make it as colorful as the outback sunset.</li>
+                    </ul>
+                    <div class="text-gray-600">
+                        <p>Dive into Casharoo – where your finances find their flow and fun jumps in!</p>
+                        <p>Casharoo: Making cents (and dollars) of your expenses. 🎉"</p>
+                    </div>
+                    <div>
+                        <a href="/accounts/signup" class="btn-main">
+                            Get Started
+                        </a>
+                    </div>
+                </section>
+            </div>
+        
+        </section>
     {% endif %}
 </div>
 {% endblock %}
