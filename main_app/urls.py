@@ -1,6 +1,5 @@
 from django.urls import path, include
 from . import views
-
 urlpatterns = [
     path("", views.home, name="home"),
     #  accounts
@@ -14,7 +13,7 @@ urlpatterns = [
     ),
     path("accounts/<int:pk>/", views.AccountDetail.as_view(), name="account_detail"),
     path(
-        "accounts/<int:pk>/transaction/create/",
+        "accounts/<int:account_id>/transaction/create/",
         views.TransactionCreate.as_view(),
         name="transaction_create",
     ),
