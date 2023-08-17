@@ -1,25 +1,45 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 {% block content %}
-
-<div class="container flex items-center justify-center m-10">
-  {% if object %}
-  <h1>Edit Transaction</h1>
+<section class="text-center"> 
+     {% if object %}
+    <h2  class="text-3xl font-bold mb-6">Edit Transaction</h1>
   {% else %}
-  <h1>Create Transaction</h1>
+  <h2 class="text-3xl font-bold mb-6">Create Transaction</h1>
   {% endif %}
+</section>
+<div  class="flex justify-center items-center m-10 items-center" >
     <form action="" method="POST">
+        {% csrf_token %}
 <table>
-        {% for field in form %}
         <tr>
-            <td>{{ field.label_tag }}</td>
-            <td>{{ field|add_class:"input-class" }}</td>
+            <td>{{ form.title.label_tag }}</td>
+            <td>{{ form.title|add_class:"input-class" }}</td>        </tr>
+        <tr>
+            <td>{{ form.amount.label_tag }}</td>
+            <td>{{ form.amount|add_class:"input-class" }}</td>
         </tr>
-        {% endfor %}
+        <tr>
+            <td>{{ form.date.label_tag }}</td>
+            <td>{{ form.date|add_class:"input-class" }}</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>{{ form.category.label_tag }}</td>
+            <td>{{ form.category|add_class:"input-class" }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.account.label_tag }}</td>
+            <td>{{ form.account|add_class:"input-class" }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.processed.label_tag }}</td>
+            <td>{{ form.processed }}</td>
+        </tr>
     </table>
+    <button class="{{button_classes}}" type="submit">Submit</button>
     </form>
 
-
 </div>
-
 {% endblock %}

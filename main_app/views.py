@@ -5,7 +5,7 @@ from .models import Account, Transaction
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Sum
-
+from django.contrib.admin.widgets import AdminDateWidget
 
 
 
@@ -39,7 +39,7 @@ class AccountDelete(DeleteView):
 
 class AccountDetail(DetailView):
     model = Account
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -58,7 +58,12 @@ class AccountList(ListView):
 
 class TransactionCreate(CreateView):
     model = Transaction
-    fields = "__all__"
+    fields = ["title","date", "amount", "category", "account", "processed"]
+    success_url = "/accounts/"
+    def get_form(self, form_class=None):
+        form = super(TransactionCreate, self).get_form(form_class)
+        form.fields["date"].widget = AdminDateWidget(attrs={"type": "date"})
+        return form
 
 
 class TransactionUpdate(UpdateView):
