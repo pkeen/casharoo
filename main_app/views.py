@@ -5,6 +5,8 @@ from .models import Account, Transaction
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Sum
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 
@@ -22,22 +24,22 @@ def home(request):
     return render(request, "home.html", context)
 
 
-class AccountCreate(CreateView):
+class AccountCreate(LoginRequiredMixin, CreateView):
     model = Account
     fields = "__all__"
 
 
-class AccountUpdate(UpdateView):
+class AccountUpdate(LoginRequiredMixin, UpdateView):
     model = Account
     fields = ['name']
 
 
-class AccountDelete(DeleteView):
+class AccountDelete(LoginRequiredMixin, DeleteView):
     model = Account
     success_url = "/"
 
 
-class AccountDetail(DetailView):
+class AccountDetail(LoginRequiredMixin, DetailView):
     model = Account
     
     def get_context_data(self, **kwargs):
@@ -51,12 +53,12 @@ class AccountDetail(DetailView):
         return context
 
 
-class AccountList(ListView):
+class AccountList(LoginRequiredMixin, ListView):
     model = Account
     fields = "__all__"
 
 
-class TransactionCreate(CreateView):
+class TransactionCreate(LoginRequiredMixin, CreateView):
     model = Transaction
     fields = "__all__"
 
