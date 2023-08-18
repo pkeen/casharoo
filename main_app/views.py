@@ -33,6 +33,11 @@ def home(request):
 class AccountCreate(LoginRequiredMixin, CreateView):
     model = Account
     fields = "__all__"
+    def get_initial(self):
+        initial = super(AccountCreate, self).get_initial()
+        initial['user'] = self.request.user
+        return initial
+
 
 
 class AccountUpdate(LoginRequiredMixin, UpdateView):
@@ -67,6 +72,26 @@ class AccountList(LoginRequiredMixin, ListView):
 class TransactionCreate(LoginRequiredMixin, CreateView):
     model = Transaction
     fields = "__all__"
+    def get_initial(self):
+        initial = super().get_initial()
+        account_id = self.kwargs.get('account_id')
+        account = Account.objects.get(id=account_id)
+        initial['account'] = Account.objects.get(id=account_id)
+        self.success_url = f"/accounts/{account_id}/"
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        account_id = self.kwargs['account_id']
+        context['account_id'] = account_id
+        context['account'] = Account.objects.get(id=account_id)
+        return context
+
+    def get_form(self, form_class=None):
+        form = super(TransactionCreate, self).get_form(form_class)
+        # date field will otherwise be rendered as a regular input for no reason
+        form.fields["date"].widget = AdminDateWidget(attrs={"type": "date"})
+        return form
 
 
 class TransactionUpdate(UpdateView):
