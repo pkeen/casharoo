@@ -26,7 +26,8 @@ def home(request):
         total_balance = sum(account_balances)
 
         # Retrieve all transactions ordered by timestamp
-        transactions = Transaction.objects.order_by('date')
+        transactions = Transaction.objects.filter(account__user=request.user).order_by('-date')
+
         context = {
             'total_balance': total_balance,
             'transactions': transactions,
