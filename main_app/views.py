@@ -11,12 +11,12 @@ from django.contrib.admin.widgets import AdminDateWidget
 
 def home(request):
     # Calculate the total balance of all accounts
-    total_balance = Account.objects.aggregate(total_balance=Sum('balance'))['total_balance']
+    # total_balance = Account.objects.aggregate(total_balance=Sum('balance'))['total_balance']
 
     # Retrieve all transactions ordered by timestamp
     transactions = Transaction.objects.order_by('date')
     context = {
-        'total_balance': total_balance,
+        # 'total_balance': total_balance,
         'transactions': transactions,
     }
     return render(request, "home.html", context)
@@ -25,7 +25,10 @@ def home(request):
 class AccountCreate(CreateView):
     model = Account
     fields = "__all__"
-
+    def get_initial(self):
+        initial = super(AccountCreate, self).get_initial()
+        initial['user'] = self.request.user
+        return initial
 
 class AccountUpdate(UpdateView):
     model = Account
@@ -58,7 +61,7 @@ class AccountList(ListView):
 
 class TransactionCreate(CreateView):
     model = Transaction
-    fields = ["title","date", "amount", "category", "account", "processed"]
+    fields = ["title","date", "amount", "category", "account"]
     def get_initial(self):
         initial = super().get_initial()
         account_id = self.kwargs.get('account_id')

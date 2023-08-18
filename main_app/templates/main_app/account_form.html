@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load widget_tweaks %}
 {% block content %}
 
 <div class="container flex items-center justify-center m-10">
@@ -29,16 +29,14 @@
                 <label for="name">Name</label>
             </div>
             <input type="text" id="name" name="name" class="input-class">
-            <div class="flex justify-center">
-                <label for="name">Balance</label>
-            </div>
-            <input type="number" id="balance" name="balance" class="input-class">
+
 
             <div class="col-span-2 flex justify-center">
                 <button class="btn p-1 px-3 rounded-full bg-emerald-800 text-white" type="submit">Add Account</button>
             </div>
 
         </div>
+        {{form.user|add_class:"hidden"}}
 
     </form>
 
