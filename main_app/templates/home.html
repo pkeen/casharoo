@@ -1,6 +1,18 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
+ <script>
+ function toggleChild(event) {
+      const parent = event.currentTarget;
+      const children = Array.from(parent.children);
+      children.forEach(child => {
+        if (child.classList.contains("child")) {
+          child.classList.toggle('hidden');
+        }
+      });
+    }
+    </script>
 <div class="flex flex-col items-center">
     {% if user.is_authenticated %}
         <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Welcome back, {{ user.username }}!</h1>
@@ -18,15 +30,22 @@
                           <th class="px-4 py-2">Description</th>
                           <th class="px-4 py-2">Account</th>
                           <th class="px-4 py-2">Amount</th>
+                          <th class="px-4 py-2"></th>
                       </tr>
                   </thead>
                   <tbody>
                       {% for transaction in transactions|dictsortreversed:"date" %}
-                          <tr class="{% cycle 'bg-gray-100' 'bg-white' %}">
-                              <td class="px-4 py-2">{{ transaction.date }}</td>
+                          <tr class="group {% cycle 'bg-gray-100' 'bg-white' %}">
+                              <td class="px-4 py-2 ">{{ transaction.date }}</td>
                               <td class="px-4 py-2">{{ transaction.title }}</td>
                               <td class="px-4 py-2">{{ transaction.account.name }}</td>
                               <td class="px-4 py-2">${{ transaction.amount }}</td>
+                              <td class="inline-flex justify-center flex-col">
+                                <a class="invisible  group-hover:visible btn-main-sm" 
+                                href="/accounts/{{transaction.account.id}}/transaction/{{transaction.id}}/update" >Edit</a>
+                                <a class="invisible group-hover:visible btn-danger-sm"
+                                href="{% url 'transaction_delete' transaction.account.id transaction.id %}">Delete</a>
+                            </td>
                           </tr>
                       {% endfor %}
                   </tbody>
@@ -34,9 +53,6 @@
             </div>
         </div>
       
-        <a href="/accounts/" class="btn-main mt-4">
-            View Your Accounts
-        </a>
     {% else %}
 
         <section class="splash">
