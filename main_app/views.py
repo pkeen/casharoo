@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from .models import Account, Transaction
@@ -6,7 +6,7 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.admin.widgets import AdminDateWidget
 
 
@@ -35,9 +35,14 @@ def home(request):
     return render(request, "home.html", context)
 
 
-class AccountCreate(LoginRequiredMixin, CreateView):
+class AccountCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Account
     fields = "__all__"
+
+    def test_func(self):
+        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        return self.request.user == account.user
+
     def get_initial(self):
         initial = super(AccountCreate, self).get_initial()
         initial['user'] = self.request.user
@@ -45,19 +50,31 @@ class AccountCreate(LoginRequiredMixin, CreateView):
 
 
 
-class AccountUpdate(LoginRequiredMixin, UpdateView):
+class AccountUpdate(LoginRequiredMixin, UserPassesTestMixin,UpdateView):
     model = Account
     fields = ['name']
 
+    def test_func(self):
+        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        return self.request.user == account.user
 
-class AccountDelete(LoginRequiredMixin, DeleteView):
+
+class AccountDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Account
     success_url = "/"
 
+    def test_func(self):
+        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        return self.request.user == account.user
 
-class AccountDetail(LoginRequiredMixin, DetailView):
+
+class AccountDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Account
     
+    def test_func(self):
+        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        return self.request.user == account.user
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -69,18 +86,27 @@ class AccountDetail(LoginRequiredMixin, DetailView):
         return context
 
 
-class AccountList(LoginRequiredMixin, ListView):
+class AccountList(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Account
     fields = "__all__"
+
+    def test_func(self):
+        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        return self.request.user == account.user
 
     def get_queryset(self):
         # Only include accounts owned by the current user
         return Account.objects.filter(user=self.request.user)
 
 
-class TransactionCreate(LoginRequiredMixin, CreateView):
+class TransactionCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Transaction
     fields = "__all__"
+
+    def test_func(self):
+        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        return self.request.user == account.user
+
     def get_initial(self):
         initial = super().get_initial()
         account_id = self.kwargs.get('account_id')
@@ -103,25 +129,36 @@ class TransactionCreate(LoginRequiredMixin, CreateView):
         return form
 
 
-class TransactionUpdate(UpdateView):
+class TransactionUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Transaction
     fields = "__all__"
 
+    def test_func(self):
+        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        return self.request.user == account.user
 
-class TransactionDelete(DeleteView):
+class TransactionDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Transaction
     success_url = "/"
 
+    def test_func(self):
+        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        return self.request.user == account.user
 
-class TransactionDetail(DetailView):
+class TransactionDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Transaction
 
+    def test_func(self):
+        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        return self.request.user == account.user
 
-class TransactionList(ListView):
+class TransactionList(LoginRequiredMixin,UserPassesTestMixin, ListView):
     model = Transaction
     fields = "__all__"
 
-
+    def test_func(self):
+        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        return self.request.user == account.user
 
 def signup(request):
   error_message = ''
