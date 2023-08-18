@@ -26,7 +26,7 @@
 }
 
 .input-class:focus {
-    @apply border-emerald-800 ring-emerald-500
+    @apply border-emerald-800 ring-emerald-500 ring-emerald-500
 }
 
 /* @layer components {
