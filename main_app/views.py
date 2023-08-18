@@ -14,19 +14,22 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 def home(request):
     # Calculate the total balance of all accounts
     # Get user accounts
-    accounts = Account.objects.filter(user=request.user)
-    # get balances
-    account_balances = [account.calculate_account_balance() for account in accounts]
-    # total_balance 
-    total_balance = sum(account_balances)
 
+    context = {}
 
-    # Retrieve all transactions ordered by timestamp
-    transactions = Transaction.objects.order_by('date')
-    context = {
-        'total_balance': total_balance,
-        'transactions': transactions,
-    }
+    if request.user.is_authenticated:
+        accounts = Account.objects.filter(user=request.user)
+        # get balances
+        account_balances = [account.calculate_account_balance() for account in accounts]
+        # total_balance 
+        total_balance = sum(account_balances)
+
+        # Retrieve all transactions ordered by timestamp
+        transactions = Transaction.objects.order_by('date')
+        context = {
+            'total_balance': total_balance,
+            'transactions': transactions,
+        }
     return render(request, "home.html", context)
 
 
