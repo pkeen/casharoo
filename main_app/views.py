@@ -5,7 +5,7 @@ from .models import Account, Transaction
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Sum
-from django.contrib.admin.widgets import AdminDateWidget
+
 
 
 
@@ -25,10 +25,7 @@ def home(request):
 class AccountCreate(CreateView):
     model = Account
     fields = "__all__"
-    def get_initial(self):
-        initial = super(AccountCreate, self).get_initial()
-        initial['user'] = self.request.user
-        return initial
+
 
 class AccountUpdate(UpdateView):
     model = Account
@@ -42,7 +39,7 @@ class AccountDelete(DeleteView):
 
 class AccountDetail(DetailView):
     model = Account
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -61,33 +58,13 @@ class AccountList(ListView):
 
 class TransactionCreate(CreateView):
     model = Transaction
-    fields = ["title","date", "amount", "category", "account"]
-    def get_initial(self):
-        initial = super().get_initial()
-        account_id = self.kwargs.get('account_id')
-        account = Account.objects.get(id=account_id)
-        initial['account'] = Account.objects.get(id=account_id)
-        self.success_url = f"/accounts/{account_id}/"
-        return initial
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        account_id = self.kwargs['account_id']
-        context['account_id'] = account_id
-        context['account'] = Account.objects.get(id=account_id)
-        return context
-
-    def get_form(self, form_class=None):
-        form = super(TransactionCreate, self).get_form(form_class)
-        # date field will otherwise be rendered as a regular input for no reason
-        form.fields["date"].widget = AdminDateWidget(attrs={"type": "date"})
-        return form
+    fields = "__all__"
 
 
 class TransactionUpdate(UpdateView):
     model = Transaction
-    fields = ["title","date", "amount", "category", "processed"]
-    success_url = "/"
+    fields = "__all__"
+
 
 class TransactionDelete(DeleteView):
     model = Transaction
@@ -115,7 +92,7 @@ def signup(request):
       user = form.save()
       # This is how we log a user in via code
       login(request, user)
-      return redirect('index')
+      return redirect('/')
     else:
       error_message = 'Invalid sign up - try again'
   # A bad POST or a GET request, so render signup.html with an empty form
