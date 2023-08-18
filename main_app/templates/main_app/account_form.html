@@ -3,42 +3,47 @@
 {% block content %}
 
 <div class="container flex items-center justify-center m-10">
-  {% if object %}
-    <form action="" method="POST">
+    <div class="paper max-w-xl">
 
-        {% csrf_token %}
-
-        <div class="grid grid-cols-2 gap-4">
-            <div class="flex">
-                <label for="name">Name</label>
-            </div>
-            <input type="text" id="name" name="name" class="border-solid border-2 border-gray-300 rounded-md">
-            <div class="col-span-2 flex justify-center">
-                <button class="btn p-1 px-3 rounded-full bg-emerald-800 text-white" type="submit">Submit Changes</button>
-            </div>
-
-        </div>
-  {% else %}
-    </form>
-    <form action="" method="POST">
-
-        {% csrf_token %}
-
-        <div class="grid grid-cols-2 gap-4">
-            <div class="flex justify-center">
-                <label for="name">Name</label>
-            </div>
-            <input type="text" id="name" name="name" class="input-class">
-
-
-            <div class="col-span-2 flex justify-center">
-                <button class="btn p-1 px-3 rounded-full bg-emerald-800 text-white" type="submit">Add Account</button>
-            </div>
-
-        </div>
-        {{form.user|add_class:"hidden"}}
-
-    </form>
+        {% if object %}
+        <h1 class="text-center text-xl text-emerald-800 mb-4">Edit Account</h2>
+          <form action="" method="POST">
+      
+              {% csrf_token %}
+      
+              <div class="grid grid-cols-2 gap-4">
+                  <div class="flex">
+                      <label for="name">Name</label>
+                  </div>
+                  <input type="text" id="name" name="name" class="border-solid border-2 border-gray-300 rounded-md">
+                  <div class="col-span-2 flex justify-center">
+                      <button class="btn p-1 px-3 rounded-full bg-emerald-800 text-white" type="submit">Submit Changes</button>
+                  </div>
+      
+              </div>
+        {% else %}
+        <h1 class="text-center text-xl text-emerald-800 mb-4">Add Account</h2>
+          </form>
+          <form action="" method="POST">
+      
+              {% csrf_token %}
+      
+              <div class="grid grid-cols-2 gap-4">
+                  <div class="flex justify-center">
+                      <label for="name">Name</label>
+                  </div>
+                  <input type="text" id="name" name="name" class="input-class">
+      
+      
+                  <div class="col-span-2 flex justify-center">
+                      <button class="btn p-1 px-3 rounded-full bg-emerald-800 text-white" type="submit">Add Account</button>
+                  </div>
+      
+              </div>
+              {{form.user|add_class:"hidden"}}
+      
+          </form>
+    </div>
 
 </div>
   {% endif %}
