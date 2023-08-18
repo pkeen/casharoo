@@ -73,6 +73,10 @@ class AccountList(LoginRequiredMixin, ListView):
     model = Account
     fields = "__all__"
 
+    def get_queryset(self):
+        # Only include accounts owned by the current user
+        return Account.objects.filter(user=self.request.user)
+
 
 class TransactionCreate(LoginRequiredMixin, CreateView):
     model = Transaction
