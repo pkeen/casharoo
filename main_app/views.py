@@ -84,7 +84,7 @@ class TransactionCreate(CreateView):
 class TransactionUpdate(UpdateView):
     model = Transaction
     fields = ["title","date", "amount", "category", "processed"]
-
+    success_url = "/"
 
 class TransactionDelete(DeleteView):
     model = Transaction
