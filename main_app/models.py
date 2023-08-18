@@ -6,24 +6,27 @@ from django.urls import reverse
 
 class Account(models.Model):
     name = models.CharField(max_length=255)
-    balance = models.DecimalField(max_digits=19, decimal_places=2)
-
-    def update_balance_from_transactions(self):
-        # Fetch transactions that are in the past and haven't been processed
-        transactions = self.transaction_set.filter(date__lte=timezone.now(), processed=False)
-        
-        for txn in transactions:
-            if txn.amount > 0:
-                self.balance += txn.amount  # for positive values, it's credited
-            else:
-                self.balance -= abs(txn.amount)  # for negative values, it's debited
-            txn.processed = True
-            txn.save()
-
-        self.save()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def get_absolute_url(self):
         return reverse('account_detail', args=[str(self.id)])
+    
+    def calculate_account_balance(self):
+        # method to calculate balance of account based on transaction history
+
+        # Fetch transactions for account earlier than current date-time
+        transactions = self.transaction_set.filter(date__lte=timezone.now())
+
+        # Store for total
+        balance = 0
+
+        # iterate transactions
+        for t in transactions:
+            balance += t.amount
+
+        return balance
+
+        
 
 class Transaction(models.Model):
     title = models.CharField(max_length=50)
@@ -31,5 +34,4 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=19, decimal_places=2)  # can be positive (credit) or negative (debit)
     category = models.CharField(max_length=100)
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    processed = models.BooleanField(default=False)
 
