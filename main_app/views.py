@@ -5,24 +5,32 @@ from .models import Account, Transaction
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Sum
-from django.contrib.admin.widgets import AdminDateWidget
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 
 
 def home(request):
     # Calculate the total balance of all accounts
-    # total_balance = Account.objects.aggregate(total_balance=Sum('balance'))['total_balance']
+    # Get user accounts
+    accounts = Account.objects.filter(user=request.user)
+    # get balances
+    account_balances = [account.calculate_account_balance() for account in accounts]
+    # total_balance 
+    total_balance = sum(account_balances)
+
 
     # Retrieve all transactions ordered by timestamp
     transactions = Transaction.objects.order_by('date')
     context = {
-        # 'total_balance': total_balance,
+        'total_balance': total_balance,
         'transactions': transactions,
     }
     return render(request, "home.html", context)
 
 
-class AccountCreate(CreateView):
+class AccountCreate(LoginRequiredMixin, CreateView):
     model = Account
     fields = "__all__"
     def get_initial(self):
@@ -30,19 +38,21 @@ class AccountCreate(CreateView):
         initial['user'] = self.request.user
         return initial
 
-class AccountUpdate(UpdateView):
+
+
+class AccountUpdate(LoginRequiredMixin, UpdateView):
     model = Account
     fields = ['name']
 
 
-class AccountDelete(DeleteView):
+class AccountDelete(LoginRequiredMixin, DeleteView):
     model = Account
     success_url = "/"
 
 
-class AccountDetail(DetailView):
+class AccountDetail(LoginRequiredMixin, DetailView):
     model = Account
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -54,14 +64,14 @@ class AccountDetail(DetailView):
         return context
 
 
-class AccountList(ListView):
+class AccountList(LoginRequiredMixin, ListView):
     model = Account
     fields = "__all__"
 
 
-class TransactionCreate(CreateView):
+class TransactionCreate(LoginRequiredMixin, CreateView):
     model = Transaction
-    fields = ["title","date", "amount", "category", "account"]
+    fields = "__all__"
     def get_initial(self):
         initial = super().get_initial()
         account_id = self.kwargs.get('account_id')
@@ -86,8 +96,8 @@ class TransactionCreate(CreateView):
 
 class TransactionUpdate(UpdateView):
     model = Transaction
-    fields = ["title","date", "amount", "category", "processed"]
-    success_url = "/"
+    fields = "__all__"
+
 
 class TransactionDelete(DeleteView):
     model = Transaction
@@ -115,7 +125,7 @@ def signup(request):
       user = form.save()
       # This is how we log a user in via code
       login(request, user)
-      return redirect('index')
+      return redirect('/')
     else:
       error_message = 'Invalid sign up - try again'
   # A bad POST or a GET request, so render signup.html with an empty form
