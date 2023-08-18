@@ -123,3 +123,7 @@
     min-height: 400px;
 }
 
+.paper {
+    @apply bg-lime-50 mx-auto shadow-md rounded-lg p-6;
+}
+
