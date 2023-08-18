@@ -59,13 +59,17 @@
         </div>
     </nav>
 
-    <main class="min-h-screen pt-20">
+    <main class="min-h-screen pt-20 pb-10">
         {% block content %}
     
         {% endblock %}
     </main>
-    
-
+    <footer class="fixed bottom-0 w-full bg-white z-10">
+      <div class="container mx-auto py-2 text-center text-sm text-gray-600">
+          All Rights Reserved, &copy; 2023 Casharoo
+      </div>
+    </footer>
+  
     <script>
         const mobileMenuButton = document.querySelector('.mobile-menu-button');
         const mobileMenu = document.querySelector('.mobile-menu');
