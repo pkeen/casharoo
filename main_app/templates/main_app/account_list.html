@@ -1,18 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1 class="text-3xl font-bold mb-6">Accounts <a href=""></a></h1>
+<h1 class="text-3xl font-bold mb-6 text-center text-emerald-800 underline">Accounts <a href=""></a></h1>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   {% for account in account_list %}
-    <a href="{% url 'account_detail' account.id %}" class="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300">
+    <a href="{% url 'account_detail' account.id %}" class="paper block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300">
       <div class="flex flex-col">
         <p class="text-xl font-semibold mb-1">Account: {{ account.name }}</p>
-        <p class="text-gray-600">Balance: ${{ account.balance }}</p>
+        <p class="text-gray-600">Balance: ${{ account.calculate_account_balance }}</p>
       </div>
     </a>
   {% endfor %}
+  <span class="flex flex-col justify-center text-center">
+    <a href="{% url 'account_create' %}" class="font-bold text-lg">
+      <span class="hover:text-emerald-600">
+        + Create Account
+      </span>
+    </a>
+  </span>  
 </div>
-<a href="{% url 'account_create' %}">Create</a>
 
 
 {% endblock %}
