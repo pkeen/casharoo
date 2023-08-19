@@ -35,13 +35,9 @@ def home(request):
     return render(request, "home.html", context)
 
 
-class AccountCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class AccountCreate(LoginRequiredMixin , CreateView):
     model = Account
     fields = "__all__"
-
-    def test_func(self):
-        account = get_object_or_404(Account, id=self.kwargs['pk'])
-        return self.request.user == account.user
 
     def get_initial(self):
         initial = super(AccountCreate, self).get_initial()
@@ -55,7 +51,7 @@ class AccountUpdate(LoginRequiredMixin, UserPassesTestMixin,UpdateView):
     fields = ['name']
 
     def test_func(self):
-        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        account = self.get_object()
         return self.request.user == account.user
 
 
@@ -86,13 +82,9 @@ class AccountDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return context
 
 
-class AccountList(LoginRequiredMixin, UserPassesTestMixin, ListView):
+class AccountList(LoginRequiredMixin, ListView):
     model = Account
     fields = "__all__"
-
-    def test_func(self):
-        account = get_object_or_404(Account, id=self.kwargs['pk'])
-        return self.request.user == account.user
 
     def get_queryset(self):
         # Only include accounts owned by the current user
@@ -104,7 +96,7 @@ class TransactionCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     fields = "__all__"
 
     def test_func(self):
-        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        account = Account.objects.get(id=self.kwargs['account_id'])
         return self.request.user == account.user
 
     def get_initial(self):
@@ -132,9 +124,10 @@ class TransactionCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 class TransactionUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Transaction
     fields = "__all__"
+    success_url = "/"
 
     def test_func(self):
-        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        account = Account.objects.get(id=self.kwargs['account_id'])
         return self.request.user == account.user
 
 class TransactionDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -142,14 +135,14 @@ class TransactionDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     success_url = "/"
 
     def test_func(self):
-        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        account = Account.objects.get(id=self.kwargs['account_id'])
         return self.request.user == account.user
 
 class TransactionDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Transaction
 
     def test_func(self):
-        account = get_object_or_404(Account, id=self.kwargs['pk'])
+        account = Account.objects.get(id=self.kwargs['account_id'])
         return self.request.user == account.user
 
 class TransactionList(LoginRequiredMixin,UserPassesTestMixin, ListView):
