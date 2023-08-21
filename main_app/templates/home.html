@@ -25,7 +25,12 @@
         <!-- expense chart area -->
         <div class="pieChart flex flex-col justify-center items-center">
             <h4 class="underline">Expense Chart</h4>
-            <canvas id="expenseChart"></canvas>
+            <canvas id="expenseChart" class="mb-1"></canvas>
+            <select name="expense_days" id="expense-days">
+                <option value="7">Last 7 Days</option>
+                <option value="30">Last 30 Days</option>
+                <option selected value="">All Time</option>
+            </select>
         </div>
         <div class="mt-8 w-full text-center flex flex-col items-center">
             <h2 class="text-2xl font-medium leading-tight text-primary text-center">Recent Transactions:</h2>
@@ -99,61 +104,82 @@
 
 
 <script>
-    
 
     console.log('worked')
 
+    // document.addEventListener('DOMContentLoaded', (event) => {
+
+    // })
+
     // const chartEl = document.getElementById('chart');
-    const ctx = document.getElementById('expenseChart');
+    
 
-    // Fetch data from the Django view for pie chart
-    fetch("{% url 'expense_pie_chart' %}")
-        .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+    let expenseChart;
+
+    const getExpenseChart = (days = null) => {
+        let endPoint = "{% url 'expense_pie_chart' %}";
+
+        if (days) {
+            endPoint += `?days=${days}`;
         }
-        return response.json();
-        })
-        .then(data => {
-            // Use the data here
-            console.log(data); // For now, just logging the data to the console
 
-            // For example, if you're using Chart.js:
-            // Update the chart dataset using the fetched data.
-            // data.data.forEach(expense => {
-            //     const name = document.createElement('h4');
-            //     const amount = document.createElement('p');
-            //     name.innerHTML = expense.category;
-            //     amount.innerHTML = expense.total;
-            //     chartEl.append(name, amount);
-            // })
-            const labels = data.data.map(item => item.category);
-            const totals = data.data.map(item => parseFloat(item.total));  // converting strings to numbers
-            // char
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                labels: labels,
-                datasets: [{
-                    data: totals,
-                    // backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'],
-                    borderWidth: 1
-                }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
+        // Fetch data from the Django view for pie chart
+        fetch("{% url 'expense_pie_chart' %}")
+            .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+            })
+            .then(data => {
+             
+                console.log(data); // For now, just logging the data to the console
+    
+                const labels = data.data.map(item => item.category);
+                const totals = data.data.map(item => parseFloat(item.total));  // converting strings to numbers
+
+                // destory previous chart
+                if (expenseChart) {
+                    expenseChart.destroy();
+                }
+
+                const ctx = document.getElementById('expenseChart');
+
+                // chart
+                expenseChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                    labels: labels,
+                    datasets: [{
+                        data: totals,
+                        // backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'],
+                        borderWidth: 1
+                    }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
                         }
                     }
-                }
-            });
+                });
+    
+            })
+            .catch(error => {
+                console.log("There was a problem with the fetch operation:", error.message);
+        });
+    }
 
-        })
-        .catch(error => {
-            console.log("There was a problem with the fetch operation:", error.message);
-    });
+    // add event listener for select
+    const expenseDaysEl = document.getElementById('expense-days');
+    expenseDaysEl.addEventListener('change', (e) => {
+        const days = e.target.value ? parseInt(e.target.value): null;
+        getExpenseChart(days);
+    })
+
+    getExpenseChart();
 
 </script>
 {% endblock %}
