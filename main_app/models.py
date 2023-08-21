@@ -53,6 +53,12 @@ class Transaction(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     repeats = models.CharField(max_length=60, choices=REPEATS_TYPES)
 
+    def save(self, *args, **kwargs):
+        # save first 
+        super(Transaction, self).save(*args, **kwargs)
+        # create child transactions based on 
+
+
 class ChildTransaction(models.Model):
     TRANSACTION_TYPES = [('debit', 'Debit'), ('credit', 'Credit')]
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
