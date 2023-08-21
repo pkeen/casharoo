@@ -32,8 +32,7 @@ def home(request):
         childtransactions = []
         for transaction in transactions:
             childtransactions.extend(transaction.childtransactions.all())
-            
-
+        childtransactions = sorted(childtransactions, key=lambda x: x.date ) 
         context = {
             'total_balance': total_balance,
             'transactions': childtransactions,
@@ -87,6 +86,7 @@ class AccountDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         for transaction in transaction_list:
             childtransactions.extend(transaction.childtransactions.all())
             
+        childtransactions = sorted(childtransactions, key=lambda x: x.date ) 
 
         context['transaction_list'] = childtransactions
         return context

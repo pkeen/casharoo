@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
+import datetime     
+from dateutil.relativedelta import relativedelta  
 
 
 class Account(models.Model):
@@ -45,7 +47,7 @@ class Category(models.Model):
 
 
 class Transaction(models.Model):
-    REPEATS_TYPES = [("once", "Once"),("monthly","Monthly")]
+    REPEATS_TYPES = [("once", "Once"),("weekly", "Weekly"),("biweekly", "Every Two Weeks"),("monthly","Monthly")]
     TRANSACTION_TYPES = [('debit', 'Debit'), ('credit', 'Credit')]
     title = models.CharField(max_length=50)
     date = models.DateTimeField()
@@ -58,9 +60,8 @@ class Transaction(models.Model):
     def save(self, *args, **kwargs):
         # create child transactions based on repeats
         if self.pk is None:
-            print("pk is none")
+            super(Transaction, self).save(*args, **kwargs)
             if self.repeats == "once":
-                print("repeats is in fact once")
                 child = ChildTransaction(
                     title = self.title,
                     transaction=self,
@@ -69,8 +70,49 @@ class Transaction(models.Model):
                     account = self.account,
                     transaction_type = self.transaction_type,
                 )
-                super(Transaction, self).save(*args, **kwargs)
                 child.save()
+
+            elif self.repeats == "weekly":
+                date = self.date
+                while (date - self.date).days < 400:
+                    date = date+relativedelta(weeks=1)
+                    child = ChildTransaction(
+                        title = self.title,
+                        transaction=self,
+                        date=date,
+                        amount=self.amount,
+                        account = self.account,
+                        transaction_type = self.transaction_type,
+                    )
+                    child.save()
+
+            elif self.repeats == "biweekly":
+                date = self.date
+                while (date - self.date).days < 400:
+                    date = date+relativedelta(weeks=2)
+                    child = ChildTransaction(
+                        title = self.title,
+                        transaction=self,
+                        date=date,
+                        amount=self.amount,
+                        account = self.account,
+                        transaction_type = self.transaction_type,
+                    )
+                    child.save()
+            elif self.repeats == "monthly":
+                date = self.date
+                while (date - self.date).days < 400:
+                    date = date+relativedelta(months=1)
+                    child = ChildTransaction(
+                        title = self.title,
+                        transaction=self,
+                        date=date,
+                        amount=self.amount,
+                        account = self.account,
+                        transaction_type = self.transaction_type,
+                    )
+                    child.save()
+                
             else:
                 super(Transaction, self).save(*args, **kwargs)
         
