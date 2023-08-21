@@ -26,12 +26,22 @@ class Account(models.Model):
 
         return balance
 
-        
+
+class Category(models.Model):
+    name = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = 'Categories'
+
+    def __str__(self):
+        return self.name
+
 
 class Transaction(models.Model):
     title = models.CharField(max_length=50)
     date = models.DateTimeField()
     amount = models.DecimalField(max_digits=19, decimal_places=2)  # can be positive (credit) or negative (debit)
-    category = models.CharField(max_length=100)
+    category = models.ForeignKey(Category, models.SET_NULL, blank=True, null=True) # can be set to null and will be null if category deleted
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
 

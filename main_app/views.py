@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
-from .models import Account, Transaction
+from .models import Account, Transaction, Category
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Sum
@@ -171,3 +171,49 @@ def signup(request):
   form = UserCreationForm()
   context = {'form': form, 'error_message': error_message}
   return render(request, 'registration/signup.html', context)
+
+
+class CategoryList(ListView):
+    ## will need to be protected by user
+    model = Category
+    fields = ['name']
+
+class CategoryCreate(CreateView):
+    model = Category
+    fields = "__all__"
+    success_url = '/categories'
+
+    def get_initial(self):
+        initial = super(CategoryCreate, self).get_initial()
+        initial['user'] = self.request.user
+        return initial
+
+class CategoryDetail(DetailView):
+    model = Category
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Retrieve the list of transactions for the account
+        category = self.object
+        transaction_list = Transaction.objects.filter(category=category)
+
+        context['transaction_list'] = transaction_list
+        return context
+
+class CategoryDelete(DeleteView):
+    model = Category
+    success_url = "/categories"
+
+    # def test_func(self):
+    #     account = get_object_or_404(Account, id=self.kwargs['pk'])
+    #     return self.request.user == account.user
+
+class CategoryUpdate(UpdateView):
+    model = Category
+    fields = ['name']
+    success_url = "/categories"
+
+    # def test_func(self):
+    #     account = self.get_object()
+    #     return self.request.user == account.user
