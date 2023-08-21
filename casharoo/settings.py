@@ -11,10 +11,23 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import environ
 
-environ.Env()
-environ.Env.read_env()
+from environ import Env
+
+env = Env()
+env.read_env()
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('GOOGLE_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = env('GOOGLE_CALLBACK')
+GOOGLE_API_KEY = env('GOOGLE_API_KEY')
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,6 +48,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "social_django",
     "widget_tweaks",
     "main_app",
     "django.contrib.admin",
