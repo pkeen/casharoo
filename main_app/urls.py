@@ -28,4 +28,10 @@ urlpatterns = [
         name="transaction_update",
     ),
    path('accounts/signup/', views.signup, name='signup'), 
+   # Category Paths
+   path('categories/', views.CategoryList.as_view(), name="category_list"),
+   path('category/create/', views.CategoryCreate.as_view(), name="category_create"),
+   path('category/<int:pk>/', views.CategoryDetail.as_view(), name="category_detail"),
+   path('category/<int:pk>/update', views.CategoryUpdate.as_view(), name="category_update"),
+   path("category/<int:pk>/delete", views.CategoryDelete.as_view(), name="category_delete"),
 ]
