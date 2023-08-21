@@ -173,12 +173,17 @@ def signup(request):
   return render(request, 'registration/signup.html', context)
 
 
-class CategoryList(ListView):
+class CategoryList(LoginRequiredMixin, ListView):
     ## will need to be protected by user
     model = Category
     fields = ['name']
 
-class CategoryCreate(CreateView):
+    def get_queryset(self):
+        # Only include categories created by the current user
+        return Category.objects.filter(user=self.request.user)
+
+
+class CategoryCreate(LoginRequiredMixin, CreateView):
     model = Category
     fields = "__all__"
     success_url = '/categories'
@@ -187,10 +192,15 @@ class CategoryCreate(CreateView):
         initial = super(CategoryCreate, self).get_initial()
         initial['user'] = self.request.user
         return initial
+    
 
-class CategoryDetail(DetailView):
+class CategoryDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Category
 
+    def test_func(self):
+        category = get_object_or_404(Category, id=self.kwargs['pk'])
+        return self.request.user == category.user
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -200,20 +210,21 @@ class CategoryDetail(DetailView):
 
         context['transaction_list'] = transaction_list
         return context
+    
 
-class CategoryDelete(DeleteView):
+class CategoryDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Category
     success_url = "/categories"
 
-    # def test_func(self):
-    #     account = get_object_or_404(Account, id=self.kwargs['pk'])
-    #     return self.request.user == account.user
+    def test_func(self):
+        category = get_object_or_404(Category, id=self.kwargs['pk'])
+        return self.request.user == category.user
 
-class CategoryUpdate(UpdateView):
+class CategoryUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Category
     fields = ['name']
     success_url = "/categories"
 
-    # def test_func(self):
-    #     account = self.get_object()
-    #     return self.request.user == account.user
+    def test_func(self):
+        category = get_object_or_404(Category, id=self.kwargs['pk'])
+        return self.request.user == category.user
