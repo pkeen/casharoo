@@ -24,7 +24,7 @@ def home(request):
         accounts = Account.objects.filter(user=request.user)
         # get balances
         account_balances = [account.calculate_account_balance() for account in accounts]
-        # total_balance 
+        # total_balance
         total_balance = sum(account_balances)
 
         # Retrieve all transactions ordered by timestamp
@@ -68,7 +68,7 @@ class AccountDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class AccountDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Account
-    
+
     def test_func(self):
         account = get_object_or_404(Account, id=self.kwargs['pk'])
         return self.request.user == account.user
@@ -106,6 +106,7 @@ class TransactionCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         account_id = self.kwargs.get('account_id')
         account = Account.objects.get(id=account_id)
         initial['account'] = Account.objects.get(id=account_id)
+        initial['repeats'] = "once"
         self.success_url = f"/accounts/{account_id}/"
         return initial
 
@@ -169,10 +170,10 @@ def signup(request):
       return redirect('/')
     else:
       error_message = 'Invalid sign up - try again'
-  # A bad POST or a GET request, so render signup.html with an empty form
-  form = UserCreationForm()
-  context = {'form': form, 'error_message': error_message}
-  return render(request, 'registration/signup.html', context)
+    # A bad POST or a GET request, so render signup.html with an empty form
+    form = UserCreationForm()
+    context = {'form': form, 'error_message': error_message}
+    return render(request, 'registration/signup.html', context)
 
 
 class CategoryList(LoginRequiredMixin, ListView):
@@ -194,7 +195,7 @@ class CategoryCreate(LoginRequiredMixin, CreateView):
         initial = super(CategoryCreate, self).get_initial()
         initial['user'] = self.request.user
         return initial
-    
+
 
 class CategoryDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Category
@@ -202,7 +203,7 @@ class CategoryDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     def test_func(self):
         category = get_object_or_404(Category, id=self.kwargs['pk'])
         return self.request.user == category.user
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -212,7 +213,7 @@ class CategoryDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
         context['transaction_list'] = transaction_list
         return context
-    
+
 
 class CategoryDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Category

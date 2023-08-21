@@ -10,7 +10,7 @@ class Account(models.Model):
 
     def get_absolute_url(self):
         return reverse('account_detail', args=[str(self.id)])
-    
+
     def calculate_account_balance(self):
         # method to calculate balance of account based on transaction history
 
@@ -22,7 +22,11 @@ class Account(models.Model):
 
         # iterate transactions
         for t in transactions:
-            balance += t.amount
+            for ct in t.transaction_set.all():
+                if ct.transaction_type == "debit":
+                    balance -= ct.amount
+                elif ct.transaction_type == "credit":
+                    balance += ct.amount
 
         return balance
 
@@ -39,9 +43,17 @@ class Category(models.Model):
 
 
 class Transaction(models.Model):
+    REPEATS_TYPES = [("once", "Once"),("monthly","Monthly")]
     title = models.CharField(max_length=50)
     date = models.DateTimeField()
     amount = models.DecimalField(max_digits=19, decimal_places=2)  # can be positive (credit) or negative (debit)
     category = models.ForeignKey(Category, models.SET_NULL, blank=True, null=True) # can be set to null and will be null if category deleted
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    repeats = models.CharField(max_length=60, choices=REPEATS_TYPES)
 
+class ChildTransaction(models.Model):
+    TRANSACTION_TYPES = [('debit', 'Debit'), ('credit', 'Credit')]
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
+    date = models.DateTimeField()
+    amount = models.DecimalField(max_digits=19, decimal_places=2)
+    transaction_type = models.CharField(max_length=60, choices=TRANSACTION_TYPES)

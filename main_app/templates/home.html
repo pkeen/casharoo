@@ -46,20 +46,35 @@
                       </tr>
                   </thead>
                   <tbody>
-                      {% for transaction in transactions|dictsortreversed:"date" %}
-                          <tr class="group {% cycle 'bg-gray-100' 'bg-white' %}">
-                              <td class="px-4 py-2 ">{{ transaction.date }}</td>
-                              <td class="px-4 py-2">{{ transaction.title }}</td>
-                              <td class="px-4 py-2">{{ transaction.account.name }}</td>
-                              <td class="px-4 py-2">${{ transaction.amount }}</td>
-                              <td class="inline-flex justify-center flex-col">
-                                <a class="invisible  group-hover:visible btn-main-sm" 
-                                href="/accounts/{{transaction.account.id}}/transaction/{{transaction.id}}/update" >Edit</a>
-                                <a class="invisible group-hover:visible btn-danger-sm"
-                                href="{% url 'transaction_delete' transaction.account.id transaction.id %}">Delete</a>
-                            </td>
-                          </tr>
-                      {% endfor %}
+                    {% for transaction in transactions|dictsortreversed:"date" %}
+    <tr class="group {% cycle 'bg-gray-100' 'bg-white' %}">
+        <td class="px-4 py-2 ">{{ transaction.date }}</td>
+        <td class="px-4 py-2">{{ transaction.title }}</td>
+        <td class="px-4 py-2">{{ transaction.account.name }}</td>
+        <td class="inline-flex justify-center flex-col">
+            <a class="invisible group-hover:visible btn-main-sm"
+            href="/accounts/{{transaction.account.id}}/transaction/{{transaction.id}}/update">Edit</a>
+            <a class="invisible group-hover:visible btn-danger-sm"
+            href="{% url 'transaction_delete' transaction.account.id transaction.id %}">Delete</a>
+        </td>
+    </tr>
+    {% for child in transaction.childtransaction_set.all %}
+        <tr class="group {% cycle 'bg-gray-200' 'bg-gray-100' %}">
+            <td class="px-4 py-2 ">--</td>
+            <td class="px-4 py-2">-- {{ child.title }}</td>
+            <td class="px-4 py-2">--</td>
+            <td class="px-4 py-2">${{ child.amount }}</td>
+            <td class="inline-flex justify-center flex-col">
+                <a class="invisible group-hover:visible btn-main-sm"
+                href="/accounts/{{transaction.account.id}}/transaction/{{transaction.id}}/child/{{child.id}}/update">Edit</a>
+                <a class="invisible group-hover:visible btn-danger-sm"
+                href="{% url 'child_transaction_delete' transaction.account.id transaction.id child.id %}">Delete</a>
+            </td>
+        </tr>
+    {% endfor %}
+{% endfor %}
+
+
                   </tbody>
               </table>
             </div>
