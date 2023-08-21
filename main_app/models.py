@@ -12,6 +12,8 @@ class Account(models.Model):
         return reverse('account_detail', args=[str(self.id)])
 
     def calculate_account_balance(self):
+        #TODO REMOVE THIS AFTER FEATURE IS COMPLETE
+        return 42
         # method to calculate balance of account based on transaction history
 
         # Fetch transactions for account earlier than current date-time

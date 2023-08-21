@@ -2,24 +2,10 @@
 {% load static %}
 {% block content %}
 
-
-
-<script>
-    function toggleChild(event) {
-        const parent = event.currentTarget;
-        const children = Array.from(parent.children);
-        children.forEach(child => {
-            if (child.classList.contains("child")) {
-            child.classList.toggle('hidden');
-            }
-        });
-    }
-</script>
-
 <div class="flex flex-col items-center">
     {% if user.is_authenticated %}
-        <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Welcome back, {{ user.username }}!</h1>
-
+    <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Welcome back, {{ user.username }}!
+    </h1>
         <h2 class="mt-4 text-2xl font-medium leading-tight text-primary">Total Current Balance:</h2>
         <h2 class="mt-2 text-4xl font-bold leading-tight text-primary text-emerald-600">${{ total_balance }}</h2>
         <!-- expense chart area -->
@@ -46,74 +32,61 @@
                       </tr>
                   </thead>
                   <tbody>
-                    {% for transaction in transactions|dictsortreversed:"date" %}
-    <tr class="group {% cycle 'bg-gray-100' 'bg-white' %}">
-        <td class="px-4 py-2 ">{{ transaction.date }}</td>
-        <td class="px-4 py-2">{{ transaction.title }}</td>
-        <td class="px-4 py-2">{{ transaction.account.name }}</td>
-        <td class="inline-flex justify-center flex-col">
-            <a class="invisible group-hover:visible btn-main-sm"
-            href="/accounts/{{transaction.account.id}}/transaction/{{transaction.id}}/update">Edit</a>
-            <a class="invisible group-hover:visible btn-danger-sm"
-            href="{% url 'transaction_delete' transaction.account.id transaction.id %}">Delete</a>
-        </td>
-    </tr>
-    {% for child in transaction.childtransaction_set.all %}
-        <tr class="group {% cycle 'bg-gray-200' 'bg-gray-100' %}">
-            <td class="px-4 py-2 ">--</td>
-            <td class="px-4 py-2">-- {{ child.title }}</td>
-            <td class="px-4 py-2">--</td>
-            <td class="px-4 py-2">${{ child.amount }}</td>
-            <td class="inline-flex justify-center flex-col">
-                <a class="invisible group-hover:visible btn-main-sm"
-                href="/accounts/{{transaction.account.id}}/transaction/{{transaction.id}}/child/{{child.id}}/update">Edit</a>
-                <a class="invisible group-hover:visible btn-danger-sm"
-                href="{% url 'child_transaction_delete' transaction.account.id transaction.id child.id %}">Delete</a>
-            </td>
-        </tr>
-    {% endfor %}
-{% endfor %}
+                    {% for transaction in transactions %}
+                    <tr class="group {% cycle 'bg-gray-100' 'bg-white' %}">
+                        <td class="px-4 py-2 ">{{ transaction.date }}</td>
+                        <td class="px-4 py-2">{{ transaction.title }}</td>
+                        <td class="px-4 py-2">{{ transaction.account.name }}</td>
+                        <td class="inline-flex justify-center flex-col">
+                            <a class="invisible group-hover:visible btn-main-sm"
+                                href="/accounts/{{transaction.account.id}}/transaction/{{transaction.id}}/update">Edit</a>
+                            <a class="invisible group-hover:visible btn-danger-sm"
+                                href="{% url 'transaction_delete' transaction.account.id transaction.id %}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
 
 
-                  </tbody>
-              </table>
-            </div>
+                </tbody>
+            </table>
         </div>
-      
+    </div>
+
     {% else %}
 
-        <section class="splash">
-            <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center text-emerald-700">
-                Cashar<span class="coin-lg">o</span><span class="coin-lg">o</span>
-            </h1>
-        
-            <div class="flex flex-col md:flex-row mt-4">
-        
-                <div class="img-container">
-                    <img class="img-main" src={% static "images/casharooWebLarge.png" %}>
-                </div>
-        
-                <section class="splash-text">
-                    <h2 class="headline">Pocket those pennies and leap into savings! 🌟</h2>
-                    <p class="text-gray-800">Bounce between budgets without breaking a sweat. Casharoo’s got your back, mate! </p>
-                    <ul class="text-left md:ps-20 text-gray-500">
-                        <li class="text-left">🦘 Stay on top of your bills with a hop, skip, and a jump.</li>
-                        <li>🌳 Plant seeds for your future savings, and watch them grow.</li>
-                        <li>🎨 Customize your expense terrain; make it as colorful as the outback sunset.</li>
-                    </ul>
-                    <div class="text-gray-600">
-                        <p>Dive into Casharoo – where your finances find their flow and fun jumps in!</p>
-                        <p>Casharoo: Making cents (and dollars) of your expenses. 🎉"</p>
-                    </div>
-                    <div>
-                        <a href="/accounts/signup" class="btn-main">
-                            Get Started
-                        </a>
-                    </div>
-                </section>
+    <section class="splash">
+        <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center text-emerald-700">
+            Cashar<span class="coin-lg">o</span><span class="coin-lg">o</span>
+        </h1>
+
+        <div class="flex flex-col md:flex-row mt-4">
+
+            <div class="img-container">
+                <img class="img-main" src={% static "images/casharooWebLarge.png" %}>
             </div>
-        
-        </section>
+
+            <section class="splash-text">
+                <h2 class="headline">Pocket those pennies and leap into savings! 🌟</h2>
+                <p class="text-gray-800">Bounce between budgets without breaking a sweat. Casharoo’s got your back,
+                    mate! </p>
+                <ul class="text-left md:ps-20 text-gray-500">
+                    <li class="text-left">🦘 Stay on top of your bills with a hop, skip, and a jump.</li>
+                    <li>🌳 Plant seeds for your future savings, and watch them grow.</li>
+                    <li>🎨 Customize your expense terrain; make it as colorful as the outback sunset.</li>
+                </ul>
+                <div class="text-gray-600">
+                    <p>Dive into Casharoo – where your finances find their flow and fun jumps in!</p>
+                    <p>Casharoo: Making cents (and dollars) of your expenses. 🎉"</p>
+                </div>
+                <div>
+                    <a href="/accounts/signup" class="btn-main">
+                        Get Started
+                    </a>
+                </div>
+            </section>
+        </div>
+
+    </section>
     {% endif %}
 </div>
 
@@ -127,7 +100,7 @@
     // })
 
     // const chartEl = document.getElementById('chart');
-    
+
 
     let expenseChart;
 
@@ -147,9 +120,9 @@
             return response.json();
             })
             .then(data => {
-             
+
                 console.log(data); // For now, just logging the data to the console
-    
+
                 const labels = data.data.map(item => item.category);
                 const totals = data.data.map(item => parseFloat(item.total));  // converting strings to numbers
 
@@ -180,7 +153,7 @@
                         }
                     }
                 });
-    
+
             })
             .catch(error => {
                 console.log("There was a problem with the fetch operation:", error.message);
