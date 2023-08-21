@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
-import datetime     
+from datetime import datetime
+import pytz
 from dateutil.relativedelta import relativedelta  
 
 
@@ -14,8 +15,6 @@ class Account(models.Model):
         return reverse('account_detail', args=[str(self.id)])
 
     def calculate_account_balance(self):
-        #TODO REMOVE THIS AFTER FEATURE IS COMPLETE
-        return 42
         # method to calculate balance of account based on transaction history
 
         # Fetch transactions for account earlier than current date-time
@@ -26,7 +25,11 @@ class Account(models.Model):
 
         # iterate transactions
         for t in transactions:
-            for ct in t.transaction_set.all():
+            children = t.childtransactions.all()
+            now = datetime.now().replace(tzinfo=pytz.utc)
+            children = [ct for ct in t.childtransactions.all() if ct.date < now]
+         
+            for ct in children:
                 if ct.transaction_type == "debit":
                     balance -= ct.amount
                 elif ct.transaction_type == "credit":
