@@ -37,6 +37,7 @@
                         <td class="px-4 py-2 ">{{ transaction.date }}</td>
                         <td class="px-4 py-2">{{ transaction.title }}</td>
                         <td class="px-4 py-2">{{ transaction.account.name }}</td>
+                        <td class="px-4 py-2">{{ transaction.amount }}</td>
                         <td class="inline-flex justify-center flex-col">
                             <a class="invisible group-hover:visible btn-main-sm"
                                 href="/accounts/{{transaction.account.id}}/transaction/{{transaction.id}}/update">Edit</a>

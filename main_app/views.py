@@ -29,14 +29,14 @@ def home(request):
 
         # Retrieve all transactions ordered by timestamp
         transactions = Transaction.objects.filter(account__user=request.user).order_by('-date')
-        child_transactions = []
+        childtransactions = []
         for transaction in transactions:
-            child_transactions.extend(transaction.childtransaction_set.all())
+            childtransactions.extend(transaction.childtransactions.all())
+            
 
         context = {
             'total_balance': total_balance,
-            'transactions': transactions,
-            'child_transactions': child_transactions
+            'transactions': childtransactions,
         }
     return render(request, "home.html", context)
 
@@ -83,8 +83,12 @@ class AccountDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         # Retrieve the list of transactions for the account
         account = self.object
         transaction_list = Transaction.objects.filter(account=account)
+        childtransactions = []
+        for transaction in transaction_list:
+            childtransactions.extend(transaction.childtransactions.all())
+            
 
-        context['transaction_list'] = transaction_list
+        context['transaction_list'] = childtransactions
         return context
 
 
@@ -110,6 +114,7 @@ class TransactionCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         account_id = self.kwargs.get('account_id')
         account = Account.objects.get(id=account_id)
         initial['account'] = Account.objects.get(id=account_id)
+        initial['transaction_type'] = "debit"
         initial['repeats'] = "once"
         self.success_url = f"/accounts/{account_id}/"
         return initial
