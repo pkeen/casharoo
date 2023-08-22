@@ -234,6 +234,8 @@ class CategoryUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 def ExpensePieChart(request):
 
     days = request.GET.get('days', None)  # Get the days parameter from the URL, default to None if not provided
+
+    print(days)
     
     # If days parameter is provided, filter transactions within the specified number of days
     if days:
