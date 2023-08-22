@@ -68,6 +68,7 @@ class Transaction(models.Model):
                 child = ChildTransaction(
                     title = self.title,
                     transaction=self,
+                    category = self.category,
                     date=self.date,
                     amount=self.amount,
                     account = self.account,
@@ -82,6 +83,7 @@ class Transaction(models.Model):
                     child = ChildTransaction(
                         title = self.title,
                         transaction=self,
+                        category = self.category,
                         date=date,
                         amount=self.amount,
                         account = self.account,
@@ -96,6 +98,7 @@ class Transaction(models.Model):
                     child = ChildTransaction(
                         title = self.title,
                         transaction=self,
+                        category = self.category,
                         date=date,
                         amount=self.amount,
                         account = self.account,
@@ -109,6 +112,7 @@ class Transaction(models.Model):
                     child = ChildTransaction(
                         title = self.title,
                         transaction=self,
+                        category = self.category,
                         date=date,
                         amount=self.amount,
                         account = self.account,
@@ -125,6 +129,7 @@ class ChildTransaction(models.Model):
     TRANSACTION_TYPES = [('debit', 'Debit'), ('credit', 'Credit')]
     title = models.CharField(max_length=50)
     transaction = models.ForeignKey(Transaction, related_name="childtransactions", on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, models.SET_NULL, blank=True, null=True) # can be set to null and will be null if category deleted
     date = models.DateTimeField()
     amount = models.DecimalField(max_digits=19, decimal_places=2)
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
