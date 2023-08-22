@@ -2,24 +2,22 @@
 {% load static %}
 {% block content %}
 
- <script>
- function toggleChild(event) {
-      const parent = event.currentTarget;
-      const children = Array.from(parent.children);
-      children.forEach(child => {
-        if (child.classList.contains("child")) {
-          child.classList.toggle('hidden');
-        }
-      });
-    }
-    </script>
 <div class="flex flex-col items-center">
     {% if user.is_authenticated %}
-        <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Welcome back, {{ user.username }}!</h1>
-
+    <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Welcome back, {{ user.username }}!
+    </h1>
         <h2 class="mt-4 text-2xl font-medium leading-tight text-primary">Total Current Balance:</h2>
         <h2 class="mt-2 text-4xl font-bold leading-tight text-primary text-emerald-600">${{ total_balance }}</h2>
-
+        <!-- expense chart area -->
+        <div class="pieChart flex flex-col justify-center items-center">
+            <h4 class="underline">Expense Chart</h4>
+            <canvas id="expenseChart" class="mb-1"></canvas>
+            <select name="expense_days" id="expense-days">
+                <option value="7">Last 7 Days</option>
+                <option value="30">Last 30 Days</option>
+                <option selected value="">All Time</option>
+            </select>
+        </div>
         <div class="mt-8 w-full text-center flex flex-col items-center">
             <h2 class="text-2xl font-medium leading-tight text-primary text-center">Recent Transactions:</h2>
             <div class="mt-2 w-full sm:w-3/4 lg:w-2/3">
@@ -34,59 +32,143 @@
                       </tr>
                   </thead>
                   <tbody>
-                      {% for transaction in transactions|dictsortreversed:"date" %}
-                          <tr class="group {% cycle 'bg-gray-100' 'bg-white' %}">
-                              <td class="px-4 py-2 ">{{ transaction.date }}</td>
-                              <td class="px-4 py-2">{{ transaction.title }}</td>
-                              <td class="px-4 py-2">{{ transaction.account.name }}</td>
-                              <td class="px-4 py-2">${{ transaction.amount }}</td>
-                              <td class="inline-flex justify-center flex-col">
-                                <a class="invisible  group-hover:visible btn-main-sm" 
-                                href="/accounts/{{transaction.account.id}}/transaction/{{transaction.id}}/update" >Edit</a>
-                                <a class="invisible group-hover:visible btn-danger-sm"
+                    {% for transaction in transactions %}
+                    <tr class="group {% cycle 'bg-gray-100' 'bg-white' %}">
+                        <td class="px-4 py-2 ">{{ transaction.date }}</td>
+                        <td class="px-4 py-2">{{ transaction.title }}</td>
+                        <td class="px-4 py-2">{{ transaction.account.name }}</td>
+                        <td class="px-4 py-2">{{ transaction.amount }}</td>
+                        <td class="inline-flex justify-center flex-col">
+                            <a class="invisible group-hover:visible btn-main-sm"
+                                href="/accounts/{{transaction.account.id}}/transaction/{{transaction.id}}/update">Edit</a>
+                            <a class="invisible group-hover:visible btn-danger-sm"
                                 href="{% url 'transaction_delete' transaction.account.id transaction.id %}">Delete</a>
-                            </td>
-                          </tr>
-                      {% endfor %}
-                  </tbody>
-              </table>
-            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+
+                </tbody>
+            </table>
         </div>
-      
+    </div>
+
     {% else %}
 
-        <section class="splash">
-            <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center text-emerald-700">
-                Cashar<span class="coin-lg">o</span><span class="coin-lg">o</span>
-            </h1>
-        
-            <div class="flex flex-col md:flex-row mt-4">
-        
-                <div class="img-container">
-                    <img class="img-main" src={% static "images/casharooWebLarge.png" %}>
-                </div>
-        
-                <section class="splash-text">
-                    <h2 class="headline">Pocket those pennies and leap into savings! 🌟</h2>
-                    <p class="text-gray-800">Bounce between budgets without breaking a sweat. Casharoo’s got your back, mate! </p>
-                    <ul class="text-left md:ps-20 text-gray-500">
-                        <li class="text-left">🦘 Stay on top of your bills with a hop, skip, and a jump.</li>
-                        <li>🌳 Plant seeds for your future savings, and watch them grow.</li>
-                        <li>🎨 Customize your expense terrain; make it as colorful as the outback sunset.</li>
-                    </ul>
-                    <div class="text-gray-600">
-                        <p>Dive into Casharoo – where your finances find their flow and fun jumps in!</p>
-                        <p>Casharoo: Making cents (and dollars) of your expenses. 🎉"</p>
-                    </div>
-                    <div>
-                        <a href="/accounts/signup" class="btn-main">
-                            Get Started
-                        </a>
-                    </div>
-                </section>
+    <section class="splash">
+        <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center text-emerald-700">
+            Cashar<span class="coin-lg">o</span><span class="coin-lg">o</span>
+        </h1>
+
+        <div class="flex flex-col md:flex-row mt-4">
+
+            <div class="img-container">
+                <img class="img-main" src={% static "images/casharooWebLarge.png" %}>
             </div>
-        
-        </section>
+
+            <section class="splash-text">
+                <h2 class="headline">Pocket those pennies and leap into savings! 🌟</h2>
+                <p class="text-gray-800">Bounce between budgets without breaking a sweat. Casharoo’s got your back,
+                    mate! </p>
+                <ul class="text-left md:ps-20 text-gray-500">
+                    <li class="text-left">🦘 Stay on top of your bills with a hop, skip, and a jump.</li>
+                    <li>🌳 Plant seeds for your future savings, and watch them grow.</li>
+                    <li>🎨 Customize your expense terrain; make it as colorful as the outback sunset.</li>
+                </ul>
+                <div class="text-gray-600">
+                    <p>Dive into Casharoo – where your finances find their flow and fun jumps in!</p>
+                    <p>Casharoo: Making cents (and dollars) of your expenses. 🎉"</p>
+                </div>
+                <div>
+                    <a href="/accounts/signup" class="btn-main">
+                        Get Started
+                    </a>
+                </div>
+            </section>
+        </div>
+
+    </section>
     {% endif %}
 </div>
+
+
+<script>
+
+
+
+    // document.addEventListener('DOMContentLoaded', (event) => {
+
+    // })
+
+    // const chartEl = document.getElementById('chart');
+
+
+    let expenseChart;
+
+    const getExpenseChart = (days = null) => {
+        let endPoint = "{% url 'expense_pie_chart' %}";
+
+        if (days) {
+            endPoint += `?days=${days}`;
+        }
+
+        // Fetch data from the Django view for pie chart
+        fetch(endPoint)
+            .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+            })
+            .then(data => {
+
+                console.log(data); // For now, just logging the data to the console
+
+                const labels = data.data.map(item => item.category);
+                const totals = data.data.map(item => parseFloat(item.total));  // converting strings to numbers
+
+                // destory previous chart
+                if (expenseChart) {
+                    expenseChart.destroy();
+                }
+
+                const ctx = document.getElementById('expenseChart');
+
+                // chart
+                expenseChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                    labels: labels,
+                    datasets: [{
+                        data: totals,
+                        // backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'],
+                        borderWidth: 1
+                    }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        }
+                    }
+                });
+
+            })
+            .catch(error => {
+                console.log("There was a problem with the fetch operation:", error.message);
+        });
+    }
+
+    // add event listener for select
+    const expenseDaysEl = document.getElementById('expense-days');
+    expenseDaysEl.addEventListener('change', (e) => {
+        const days = e.target.value ? parseInt(e.target.value): null;
+        getExpenseChart(days);
+    })
+
+    getExpenseChart();
+
+</script>
 {% endblock %}

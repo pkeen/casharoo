@@ -4,10 +4,12 @@ from django.views.generic import ListView, DetailView
 from .models import Account, Transaction, Category
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from django.db.models import Sum
+from django.db.models import Sum, Case, When, DecimalField
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.admin.widgets import AdminDateWidget
+from django.http import JsonResponse
+from datetime import timedelta, date
 
 
 
@@ -22,15 +24,23 @@ def home(request):
         accounts = Account.objects.filter(user=request.user)
         # get balances
         account_balances = [account.calculate_account_balance() for account in accounts]
-        # total_balance 
+        # total_balance
         total_balance = sum(account_balances)
 
         # Retrieve all transactions ordered by timestamp
         transactions = Transaction.objects.filter(account__user=request.user).order_by('-date')
+        childtransactions = []
+        for transaction in transactions:
+            childtransactions.extend(transaction.childtransactions.all())
+        childtransactions = sorted(childtransactions, key=lambda x: x.date ) 
+        running_balance = 0
+        # for idx, el in enumerate(childtransactions):
+        #     running_balance = running_balance + el.amount
+        #     el['running_balance'] = running_balance
 
         context = {
             'total_balance': total_balance,
-            'transactions': transactions,
+            'transactions': childtransactions,
         }
     return render(request, "home.html", context)
 
@@ -66,7 +76,7 @@ class AccountDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class AccountDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Account
-    
+
     def test_func(self):
         account = get_object_or_404(Account, id=self.kwargs['pk'])
         return self.request.user == account.user
@@ -77,8 +87,13 @@ class AccountDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         # Retrieve the list of transactions for the account
         account = self.object
         transaction_list = Transaction.objects.filter(account=account)
+        childtransactions = []
+        for transaction in transaction_list:
+            childtransactions.extend(transaction.childtransactions.all())
+            
+        childtransactions = sorted(childtransactions, key=lambda x: x.date ) 
 
-        context['transaction_list'] = transaction_list
+        context['transaction_list'] = childtransactions
         return context
 
 
@@ -104,6 +119,8 @@ class TransactionCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         account_id = self.kwargs.get('account_id')
         account = Account.objects.get(id=account_id)
         initial['account'] = Account.objects.get(id=account_id)
+        initial['transaction_type'] = "debit"
+        initial['repeats'] = "once"
         self.success_url = f"/accounts/{account_id}/"
         return initial
 
@@ -154,23 +171,23 @@ class TransactionList(LoginRequiredMixin,UserPassesTestMixin, ListView):
         return self.request.user == account.user
 
 def signup(request):
-  error_message = ''
-  if request.method == 'POST':
+    error_message = ''
+    if request.method == 'POST':
     # This is how to create a 'user' form object
     # that includes the data from the browser
-    form = UserCreationForm(request.POST)
-    if form.is_valid():
-      # This will add the user to the database
-      user = form.save()
-      # This is how we log a user in via code
-      login(request, user)
-      return redirect('/')
-    else:
-      error_message = 'Invalid sign up - try again'
-  # A bad POST or a GET request, so render signup.html with an empty form
-  form = UserCreationForm()
-  context = {'form': form, 'error_message': error_message}
-  return render(request, 'registration/signup.html', context)
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            # This will add the user to the database
+            user = form.save()
+            # This is how we log a user in via code
+            login(request, user)
+            return redirect('/')
+        else:
+            error_message = 'Invalid sign up - try again'
+     # A bad POST or a GET request, so render signup.html with an empty form form = UserCreationForm()
+    form = UserCreationForm()
+    context = {'form': form, 'error_message': error_message}
+    return render(request, 'registration/signup.html', context)
 
 
 class CategoryList(LoginRequiredMixin, ListView):
@@ -192,7 +209,7 @@ class CategoryCreate(LoginRequiredMixin, CreateView):
         initial = super(CategoryCreate, self).get_initial()
         initial['user'] = self.request.user
         return initial
-    
+
 
 class CategoryDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Category
@@ -200,7 +217,7 @@ class CategoryDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     def test_func(self):
         category = get_object_or_404(Category, id=self.kwargs['pk'])
         return self.request.user == category.user
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -210,7 +227,7 @@ class CategoryDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
         context['transaction_list'] = transaction_list
         return context
-    
+
 
 class CategoryDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Category
@@ -228,3 +245,32 @@ class CategoryUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         category = get_object_or_404(Category, id=self.kwargs['pk'])
         return self.request.user == category.user
+
+def ExpensePieChart(request):
+
+    days = request.GET.get('days', None)  # Get the days parameter from the URL, default to None if not provided
+
+    print(days)
+    
+    # If days parameter is provided, filter transactions within the specified number of days
+    if days:
+        start_date = date.today() - timedelta(days=int(days))
+        categories = Category.objects.filter(user=request.user, transaction__date__gte=start_date)  # Filter by date greater than or equal to start_date
+    else:
+        categories = Category.objects.filter(user=request.user)
+
+    if request.user.is_authenticated:
+        categories = categories.annotate(
+            total=Sum(
+                Case(
+                    When(transaction__amount__lt=0, then='transaction__amount'),
+                    default=0,
+                    output_field=DecimalField()
+                )
+            )
+        )
+
+    # Convert the queryset into a list of dictionaries
+    data = [{'category': category.name, 'total': abs(category.total)} for category in categories if category.total < 0]
+
+    return JsonResponse({'data': data})
