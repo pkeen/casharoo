@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
-from .models import Account, Transaction, Category
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Sum, Case, When, DecimalField
@@ -12,6 +11,7 @@ from django.http import JsonResponse
 from datetime import timedelta, date
 
 
+from .models import Account, Transaction, Category, ChildTransaction
 
 
 def home(request):
@@ -278,3 +278,20 @@ def ExpensePieChart(request):
     data = [{'category': category.name, 'total': abs(category.total)} for category in categories if category.total < 0]
 
     return JsonResponse({'data': data})
+
+class ChildTransactionUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = ChildTransaction
+    fields = "__all__"
+    success_url = "/"
+
+    def test_func(self):
+        account = Account.objects.get(id=self.kwargs['account_id'])
+        return self.request.user == account.user
+
+class ChildTransactionDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = ChildTransaction
+    success_url = "/"
+
+    def test_func(self):
+        account = Account.objects.get(id=self.kwargs['account_id'])
+        return self.request.user == account.user

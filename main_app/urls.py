@@ -27,6 +27,17 @@ urlpatterns = [
         views.TransactionUpdate.as_view(),
         name="transaction_update",
     ),
+    # update and delete child transactions
+    path(
+        "accounts/<int:account_id>/transaction/<int:transaction_id>/<int:pk>/delete/",
+        views.ChildTransactionDelete.as_view(),
+        name="child_transaction_delete",
+    ),
+    path(
+        "accounts/<int:account_id>/transaction/<int:transaction_id>/<int:pk>/update/",
+        views.ChildTransactionUpdate.as_view(),
+        name="child_transaction_update",
+    ),
    path('accounts/signup/', views.signup, name='signup'), 
    # Category Paths
    path('categories/', views.CategoryList.as_view(), name="category_list"),
