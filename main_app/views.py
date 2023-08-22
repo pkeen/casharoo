@@ -34,9 +34,9 @@ def home(request):
             childtransactions.extend(transaction.childtransactions.all())
         childtransactions = sorted(childtransactions, key=lambda x: x.date ) 
         running_balance = 0
-        for idx, el in enumerate(childtransactions):
-            running_balance = running_balance + el.amount
-            el['running_balance'] = running_balance
+        # for idx, el in enumerate(childtransactions):
+        #     running_balance = running_balance + el.amount
+        #     el['running_balance'] = running_balance
 
         context = {
             'total_balance': total_balance,
