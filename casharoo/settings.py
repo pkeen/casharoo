@@ -150,13 +150,22 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-WHITENOISE_MANIFEST_STRICT = False
 STATIC_URL = "/static/"
 STATIC_ROOT = str(BASE_DIR) + "/staticfiles"
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 LOGIN_REDIRECT_URL = "/accounts/"
 LOGOUT_REDIRECT_URL = "/"
 
+from whitenoise.storage import CompressedManifestStaticFilesStorage
+
+class CustomStaticFilesStorage(CompressedManifestStaticFilesStorage):
+
+    def list(self, path):
+        files = super().list(path)
+        # Filter out the specific file you want to exclude
+        files = [(storage, name) for storage, name in files if "source.css" not in name]
+        return files
+
+STATICFILES_STORAGE = CustomStaticFilesStorage
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
