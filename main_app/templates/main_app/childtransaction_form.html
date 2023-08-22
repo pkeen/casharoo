@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<section class="text-center"> 
+     {% if object %}
+    <h2  class="text-3xl font-bold mb-6">Edit Transaction</h1>
+  {% else %}
+  <h2 class="text-3xl font-bold mb-6">Create Transaction</h1>
+  {% endif %}
+</section>
+<div  class="flex justify-center items-center m-10 items-center" >
+    <form action="" method="POST">
+        {% csrf_token %}
+<table>
+        <tr>
+            <td>{{ form.title.label_tag }}</td>
+            <td>{{ form.title|add_class:"input-class" }}</td>        </tr>
+        <tr>
+            <td>{{ form.amount.label_tag }}</td>
+            <td>{{ form.amount|add_class:"input-class" }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.date.label_tag }}</td>
+            <td>{{ form.date|add_class:"input-class" }}</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>{{ form.category.label_tag }}</td>
+            <td>{{ form.category|add_class:"input-class" }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.transaction_type.label_tag }}</td>
+            <td>{{ form.transaction_type |add_class:"input-class"}}</td>
+        </tr>
+        <tr>
+            <td>{{ form.repeats.label_tag }}</td>
+            <td>{{ form.repeats |add_class:"input-class"}}</td>
+        </tr>
+    </table>
+    <button class="btn-main" type="submit">Submit</button>
+    {{form.account|add_class:"hidden"}}
+    </form>
+
+</div>
+{% endblock %}
