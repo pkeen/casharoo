@@ -50,7 +50,7 @@ if PRODUCTION:
 DEBUG = True
 
 if PRODUCTION:
-    DEBUG = False
+    DEBUG = True
 
 ALLOWED_HOSTS = ['*',]
 
