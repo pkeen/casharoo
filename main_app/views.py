@@ -4,10 +4,12 @@ from django.views.generic import ListView, DetailView
 from .models import Account, Transaction, Category
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from django.db.models import Sum
+from django.db.models import Sum, Case, When, DecimalField
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.admin.widgets import AdminDateWidget
+from django.http import JsonResponse
+from datetime import timedelta, date
 
 
 
@@ -228,3 +230,32 @@ class CategoryUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         category = get_object_or_404(Category, id=self.kwargs['pk'])
         return self.request.user == category.user
+
+def ExpensePieChart(request):
+
+    days = request.GET.get('days', None)  # Get the days parameter from the URL, default to None if not provided
+
+    print(days)
+    
+    # If days parameter is provided, filter transactions within the specified number of days
+    if days:
+        start_date = date.today() - timedelta(days=int(days))
+        categories = Category.objects.filter(user=request.user, transaction__date__gte=start_date)  # Filter by date greater than or equal to start_date
+    else:
+        categories = Category.objects.filter(user=request.user)
+
+    if request.user.is_authenticated:
+        categories = categories.annotate(
+            total=Sum(
+                Case(
+                    When(transaction__amount__lt=0, then='transaction__amount'),
+                    default=0,
+                    output_field=DecimalField()
+                )
+            )
+        )
+
+    # Convert the queryset into a list of dictionaries
+    data = [{'category': category.name, 'total': abs(category.total)} for category in categories if category.total < 0]
+
+    return JsonResponse({'data': data})
