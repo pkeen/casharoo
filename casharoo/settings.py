@@ -151,7 +151,6 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = str(BASE_DIR) + "/staticfiles"
-print(STATIC_ROOT)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 LOGIN_REDIRECT_URL = "/accounts/"
 LOGOUT_REDIRECT_URL = "/"
