@@ -4,6 +4,7 @@
 
 <div class="flex flex-col items-center mb-8">
     {% if user.is_authenticated %}
+
     <div class="paper bg-white max-w-4xl w-full items-center flex flex-col">
         <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Welcome back, {{ user.username }}!
         </h1>
@@ -20,6 +21,12 @@
                 <option value="30">Last 30 Days</option>
                 <option selected value="">All Time</option>
             </select> -->
+    {% if first_negative_transaction_id > -1%}
+    <div class="max-w-4xl w-full items-center flex flex-col mt-5 text-white bg-red-600 rounded-md">
+        <a href="/#{{first_negative_transaction_id}}"><h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Trouble Ahead Click Here</a>
+        </h1>
+    </div>
+    {% endif %}
     <div class="mt-8 w-full text-center flex flex-col items-center paper max-w-4xl">
         <h2 class="text-2xl font-medium leading-tight text-primary text-center">Recent Transactions:</h2>
         <div class="mt-2 w-full sm:w-3/4 lg:w-2/3">
@@ -36,7 +43,7 @@
                 </thead>
                 <tbody>
                     {% for transaction in transactions %}
-                    <tr id={{transaction.transaction_number}} class="group {% cycle 'bg-gray-100' 'bg-white' %}">
+                        <tr id={{transaction.transaction_number}} class="group {% cycle 'bg-gray-100' 'bg-white' %}">
                         <td class="px-4 py-2 ">{{ transaction.date }}</td>
                         <td class="px-4 py-2">{{ transaction.title }}</td>
                         <td class="px-4 py-2">{{ transaction.account.name }}</td>
@@ -45,7 +52,11 @@
                         {% else %}
                         <td class="px-4 py-2">-{{ transaction.amount }}</td>
                         {% endif %}
+                    {% if transaction.running_balance < 0 %}
+                        <td class="px-4 py-2 text-red-500 ">{{ transaction.running_balance }}</td>
+                    {% else %}
                         <td class="px-4 py-2 ">{{ transaction.running_balance }}</td>
+                    {% endif %}
                         <td class="p-0">
                             <div class="h-full flex items-center justify-center">
                                 <a class="invisible group-hover:visible btn-main-sm"

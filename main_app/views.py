@@ -34,6 +34,7 @@ def home(request):
             childtransactions.extend(transaction.childtransactions.all())
         childtransactions = sorted(childtransactions, key=lambda x: x.date ) 
         running_balance = 0
+        first_negative_transaction_id = -1
         for idx, el in enumerate(childtransactions):
             if el.transaction_type == "credit":
                 running_balance = running_balance + el.amount
@@ -41,10 +42,13 @@ def home(request):
                 running_balance = running_balance - el.amount
             el.transaction_number = idx
             el.running_balance = running_balance
+            if running_balance < 0 and first_negative_transaction_id == -1:
+                first_negative_transaction_id = idx-1
 
         context = {
             'total_balance': total_balance,
             'transactions': childtransactions,
+            'first_negative_transaction_id': first_negative_transaction_id,
         }
     return render(request, "home.html", context)
 
