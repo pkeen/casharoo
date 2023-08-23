@@ -5,13 +5,14 @@
 <div class="flex flex-col items-center mb-8">
     {% if user.is_authenticated %}
     <div class="paper bg-white max-w-4xl w-full items-center flex flex-col">
-    <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Welcome back, {{ user.username }}!
-    </h1>
+        <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Welcome back, {{ user.username
+            }}!
+        </h1>
         <h2 class="mt-4 text-2xl font-medium leading-tight text-primary">Total Current Balance:</h2>
         <h2 class="mt-2 text-4xl font-bold leading-tight text-primary text-emerald-600">${{ total_balance }}</h2>
-</div>
-        <!-- expense chart area -->
-        <!-- <div class="pieChart flex flex-col justify-center items-center">
+    </div>
+    <!-- expense chart area -->
+    <!-- <div class="pieChart flex flex-col justify-center items-center">
             <h4 class="underline">Expense Chart</h4>
             <canvas id="expenseChart" class="mb-1"></canvas>
         </div>
@@ -20,33 +21,35 @@
                 <option value="30">Last 30 Days</option>
                 <option selected value="">All Time</option>
             </select> -->
-        <div class="mt-8 w-full text-center flex flex-col items-center paper max-w-4xl">
-            <h2 class="text-2xl font-medium leading-tight text-primary text-center">Recent Transactions:</h2>
-            <div class="mt-2 w-full sm:w-3/4 lg:w-2/3">
-              <table class="table-auto mt-4 w-full">
-                  <thead>
-                      <tr>
-                          <th class="px-4 py-2">Date</th>
-                          <th class="px-4 py-2">Description</th>
-                          <th class="px-4 py-2">Account</th>
-                          <th class="px-4 py-2">Amount</th>
-                          <th class="px-4 py-2">Balance</th>
-                          <th class="px-4 py-2"></th>
-                      </tr>
-                  </thead>
-                  <tbody>
+    <div class="mt-8 w-full text-center flex flex-col items-center paper max-w-4xl">
+        <h2 class="text-2xl font-medium leading-tight text-primary text-center">Recent Transactions:</h2>
+        <div class="mt-2 w-full sm:w-3/4 lg:w-2/3">
+            <table class="table-auto mt-4 w-full">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Date</th>
+                        <th class="px-4 py-2">Description</th>
+                        <th class="px-4 py-2">Account</th>
+                        <th class="px-4 py-2">Amount</th>
+                        <th class="px-4 py-2">Balance</th>
+                        <th class="px-4 py-2"></th>
+                    </tr>
+                </thead>
+                <tbody>
                     {% for transaction in transactions %}
                     <tr id={{transaction.transaction_number}} class="group {% cycle 'bg-gray-100' 'bg-white' %}">
                         <td class="px-4 py-2 ">{{ transaction.date }}</td>
                         <td class="px-4 py-2">{{ transaction.title }}</td>
                         <td class="px-4 py-2">{{ transaction.account.name }}</td>
                         <td class="px-4 py-2">{{ transaction.amount }}</td>
-                        <td class="px-4 py-2 " >{{ transaction.running_balance }}</td>
-                        <td class="inline-flex justify-center flex-col">
-                            <a class="invisible group-hover:visible btn-main-sm"
-                                href="/accounts/{{transaction.account.id}}/transaction/{{transaction.transaction.id}}/{{transaction.id}}/update">Edit</a>
-                            <a class="invisible group-hover:visible btn-danger-sm"
-                                href="/accounts/{{transaction.account.id}}/transaction/{{transaction.transaction.id}}/{{transaction.id}}/delete">Delete</a>
+                        <td class="px-4 py-2 ">{{ transaction.running_balance }}</td>
+                        <td class="p-0">
+                            <div class="h-full flex items-center justify-center">
+                                <a class="invisible group-hover:visible btn-main-sm"
+                                    href="/accounts/{{transaction.account.id}}/transaction/{{transaction.transaction.id}}/{{transaction.id}}/update">Edit</a>
+                                <a class="invisible group-hover:visible btn-danger-sm"
+                                    href="/accounts/{{transaction.account.id}}/transaction/{{transaction.transaction.id}}/{{transaction.id}}/delete">Delete</a>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -119,10 +122,10 @@
         // Fetch data from the Django view for pie chart
         fetch(endPoint)
             .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
             })
             .then(data => {
 
@@ -142,12 +145,12 @@
                 expenseChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                    labels: labels,
-                    datasets: [{
-                        data: totals,
-                        // backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'],
-                        borderWidth: 1
-                    }]
+                        labels: labels,
+                        datasets: [{
+                            data: totals,
+                            // backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'],
+                            borderWidth: 1
+                        }]
                     },
                     options: {
                         responsive: true,
@@ -162,13 +165,13 @@
             })
             .catch(error => {
                 console.log("There was a problem with the fetch operation:", error.message);
-        });
+            });
     }
 
     // add event listener for select
     const expenseDaysEl = document.getElementById('expense-days');
     expenseDaysEl.addEventListener('change', (e) => {
-        const days = e.target.value ? parseInt(e.target.value): null;
+        const days = e.target.value ? parseInt(e.target.value) : null;
         getExpenseChart(days);
     })
 
