@@ -5,8 +5,7 @@
 <div class="flex flex-col items-center mb-8">
     {% if user.is_authenticated %}
     <div class="paper bg-white max-w-4xl w-full items-center flex flex-col">
-        <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Welcome back, {{ user.username
-            }}!
+        <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Welcome back, {{ user.username }}!
         </h1>
         <h2 class="mt-4 text-2xl font-medium leading-tight text-primary">Total Current Balance:</h2>
         <h2 class="mt-2 text-4xl font-bold leading-tight text-primary text-emerald-600">${{ total_balance }}</h2>
@@ -41,7 +40,11 @@
                         <td class="px-4 py-2 ">{{ transaction.date }}</td>
                         <td class="px-4 py-2">{{ transaction.title }}</td>
                         <td class="px-4 py-2">{{ transaction.account.name }}</td>
+                        {%if transaction.transaction_type == "credit"%}
                         <td class="px-4 py-2">{{ transaction.amount }}</td>
+                        {% else %}
+                        <td class="px-4 py-2">-{{ transaction.amount }}</td>
+                        {% endif %}
                         <td class="px-4 py-2 ">{{ transaction.running_balance }}</td>
                         <td class="p-0">
                             <div class="h-full flex items-center justify-center">
