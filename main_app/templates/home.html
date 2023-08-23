@@ -11,16 +11,28 @@
         <h2 class="mt-4 text-2xl font-medium leading-tight text-primary">Total Current Balance:</h2>
         <h2 class="mt-2 text-4xl font-bold leading-tight text-primary text-emerald-600">${{ total_balance }}</h2>
     </div>
-    <!-- expense chart area -->
-    <!-- <div class="pieChart flex flex-col justify-center items-center">
-            <h4 class="underline">Expense Chart</h4>
-            <canvas id="expenseChart" class="mb-1"></canvas>
-        </div>
+    <!-- Charts area -->
+    <div class="pieCharts flex flex-col justify-center items-center mt-2">
+        <h2 class="font-medium">Category Breakdown</h2>
+        <div>
+            <label for="expense-days">Select time period: </label>
             <select name="expense_days" id="expense-days">
                 <option value="7">Last 7 Days</option>
                 <option value="30">Last 30 Days</option>
                 <option selected value="">All Time</option>
-            </select> -->
+            </select>
+        </div>
+        <div class="flex flex-col md:flex-row justify-center items-center">
+            <div id="expenseDiv">
+                <h4 class="underline text-center">Expenses</h4>
+                <canvas id="expenseChartCanvas" class="mb-1"></canvas>
+            </div>
+            <div id="incomeDiv">
+                <h4 class="underline text-center">Income</h4>
+                <canvas id="incomeChartCanvas" class="mb-1"></canvas>
+            </div>
+        </div>
+    </div>
     {% if first_negative_transaction_id > -1%}
     <div class="max-w-4xl w-full items-center flex flex-col mt-5 text-white bg-red-600 rounded-md">
         <a href="/#{{first_negative_transaction_id}}"><h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Trouble Ahead Click Here</a>
@@ -125,38 +137,24 @@
 
 
     let expenseChart;
+    let incomeChart;
 
-    const getExpenseChart = (days = null) => {
-        let endPoint = "{% url 'expense_pie_chart' %}";
+    const expenseCanvas = document.getElementById('expenseChartCanvas');
+    const incomeCanvas = document.getElementById('incomeChartCanvas');
 
-        if (days) {
-            endPoint += `?days=${days}`;
+    const drawChart = (data, chart, canvas) => {
+        const labels = data.map(item => item.category);
+        const totals = data.map(item => parseFloat(item.total));
+
+        // destroy old chart
+        if (chart) {
+            chart.destroy();
         }
 
-        // Fetch data from the Django view for pie chart
-        fetch(endPoint)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
+        const ctx = canvas;
 
-                console.log(data); // For now, just logging the data to the console
-
-                const labels = data.data.map(item => item.category);
-                const totals = data.data.map(item => parseFloat(item.total));  // converting strings to numbers
-
-                // destory previous chart
-                if (expenseChart) {
-                    expenseChart.destroy();
-                }
-
-                const ctx = document.getElementById('expenseChart');
-
-                // chart
-                expenseChart = new Chart(ctx, {
+        // chart
+        return new Chart(ctx, {
                     type: 'doughnut',
                     data: {
                         labels: labels,
@@ -175,6 +173,47 @@
                         }
                     }
                 });
+    }
+
+    const getCharts = (days = null) => {
+        let endPoint = "{% url 'pie_charts' %}";
+
+        if (days) {
+            endPoint += `?days=${days}`;
+        }
+
+        // Fetch data from the Django view for pie chart
+        fetch(endPoint)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+
+                // console.log(data); // For now, just logging the data to the console
+
+                // create expense chart
+                if (data.expenses) {
+                    expenseChart = drawChart(data.expenses, expenseChart, expenseCanvas);
+
+                } else {
+                    const msg = document.createElement('p');
+                    msg.innerHTML = "No expense category data"
+                    document.getElementById('expenseDiv').append(msg);
+                    document.getElementById('expenseDiv').append(document.createElement('p').innerHTML = 'Add come categories to your expenses for breakdown')
+                }
+
+                if (data.income.length > 0 ) {
+                    incomeChart = drawChart(data.income, incomeChart, incomeCanvas);
+
+                } else {
+                    const msg = document.createElement('p');
+                    msg.innerHTML = "No income category data"
+                    document.getElementById('incomeDiv').append(msg);
+                    document.getElementById('incomeDiv').append(document.createElement('p').innerHTML = 'Add come categories to your income for breakdown')
+                }
 
             })
             .catch(error => {
@@ -186,10 +225,10 @@
     const expenseDaysEl = document.getElementById('expense-days');
     expenseDaysEl.addEventListener('change', (e) => {
         const days = e.target.value ? parseInt(e.target.value) : null;
-        getExpenseChart(days);
+        getCharts(days);
     })
 
-    getExpenseChart();
+    getCharts();
 
 </script>
 {% endblock %}

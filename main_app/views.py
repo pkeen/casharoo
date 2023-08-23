@@ -3,7 +3,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from django.db.models import Sum, Case, When, DecimalField
+from django.db.models import Sum, Case, When, DecimalField, F, Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.admin.widgets import AdminDateWidget
@@ -254,24 +254,36 @@ class CategoryUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         category = get_object_or_404(Category, id=self.kwargs['pk'])
         return self.request.user == category.user
 
-def ExpensePieChart(request):
+
+
+
+def PieCharts(request):
 
     days = request.GET.get('days', None)  # Get the days parameter from the URL, default to None if not provided
 
-    print(days)
-    
-    # If days parameter is provided, filter transactions within the specified number of days
+    categories = Category.objects.filter(user=request.user)
+
     if days:
         start_date = date.today() - timedelta(days=int(days))
-        categories = Category.objects.filter(user=request.user, transaction__date__gte=start_date)  # Filter by date greater than or equal to start_date
-    else:
-        categories = Category.objects.filter(user=request.user)
+        categories = categories.filter(childtransaction__date__gte=start_date)
 
+    
     if request.user.is_authenticated:
-        categories = categories.annotate(
+        # get expenses
+        expenses = categories.annotate(
             total=Sum(
                 Case(
-                    When(transaction__amount__lt=0, then='transaction__amount'),
+                    When(childtransaction__transaction_type='debit', then='childtransaction__amount'),
+                    default=0,
+                    output_field=DecimalField()
+                )
+            )
+        )
+        # get income
+        incomes = categories.annotate(
+            total=Sum(
+                Case(
+                    When(childtransaction__transaction_type='credit', then='childtransaction__amount'),
                     default=0,
                     output_field=DecimalField()
                 )
@@ -279,9 +291,12 @@ def ExpensePieChart(request):
         )
 
     # Convert the queryset into a list of dictionaries
-    data = [{'category': category.name, 'total': abs(category.total)} for category in categories if category.total < 0]
+    expenses = [{'category': expense.name, 'total': abs(expense.total)} for expense in expenses if expense.total]
+    incomes = [{'category': income.name, 'total': abs(income.total)} for income in incomes if income.total]
 
-    return JsonResponse({'data': data})
+    return JsonResponse({'expenses': expenses, 'income': incomes})
+
+
 
 class ChildTransactionUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = ChildTransaction

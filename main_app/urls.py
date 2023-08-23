@@ -45,5 +45,5 @@ urlpatterns = [
    path('category/<int:pk>/', views.CategoryDetail.as_view(), name="category_detail"),
    path('category/<int:pk>/update', views.CategoryUpdate.as_view(), name="category_update"),
    path("category/<int:pk>/delete", views.CategoryDelete.as_view(), name="category_delete"),
-   path("expense_pie_chart/", views.ExpensePieChart, name="expense_pie_chart")
+   path("pie_charts/", views.PieCharts, name="pie_charts")
 ]
