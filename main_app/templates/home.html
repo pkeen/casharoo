@@ -46,7 +46,7 @@
                             <a class="invisible group-hover:visible btn-main-sm"
                                 href="/accounts/{{transaction.account.id}}/transaction/{{transaction.transaction.id}}/{{transaction.id}}/update">Edit</a>
                             <a class="invisible group-hover:visible btn-danger-sm"
-                                href="{% url 'child_transaction_delete' transaction.account.id transaction.transaction.id transaction.id %}">Delete</a>
+                                href="/accounts/{{transaction.account.id}}/transaction/{{transaction.transaction.id}}/{{transaction.id}}/delete">Delete</a>
                         </td>
                     </tr>
                     {% endfor %}
