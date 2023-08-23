@@ -2,23 +2,25 @@
 {% load static %}
 {% block content %}
 
-<div class="flex flex-col items-center">
+<div class="flex flex-col items-center mb-8">
     {% if user.is_authenticated %}
+    <div class="paper bg-white max-w-4xl w-full items-center flex flex-col">
     <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary self-center">Welcome back, {{ user.username }}!
     </h1>
         <h2 class="mt-4 text-2xl font-medium leading-tight text-primary">Total Current Balance:</h2>
         <h2 class="mt-2 text-4xl font-bold leading-tight text-primary text-emerald-600">${{ total_balance }}</h2>
+</div>
         <!-- expense chart area -->
         <div class="pieChart flex flex-col justify-center items-center">
             <h4 class="underline">Expense Chart</h4>
             <canvas id="expenseChart" class="mb-1"></canvas>
+        </div>
             <select name="expense_days" id="expense-days">
                 <option value="7">Last 7 Days</option>
                 <option value="30">Last 30 Days</option>
                 <option selected value="">All Time</option>
             </select>
-        </div>
-        <div class="mt-8 w-full text-center flex flex-col items-center">
+        <div class="mt-8 w-full text-center flex flex-col items-center paper max-w-4xl">
             <h2 class="text-2xl font-medium leading-tight text-primary text-center">Recent Transactions:</h2>
             <div class="mt-2 w-full sm:w-3/4 lg:w-2/3">
               <table class="table-auto mt-4 w-full">
