@@ -11,7 +11,7 @@
         <h2 class="mt-2 text-4xl font-bold leading-tight text-primary text-emerald-600">${{ total_balance }}</h2>
 </div>
         <!-- expense chart area -->
-        <div class="pieChart flex flex-col justify-center items-center">
+        <!-- <div class="pieChart flex flex-col justify-center items-center">
             <h4 class="underline">Expense Chart</h4>
             <canvas id="expenseChart" class="mb-1"></canvas>
         </div>
@@ -19,7 +19,7 @@
                 <option value="7">Last 7 Days</option>
                 <option value="30">Last 30 Days</option>
                 <option selected value="">All Time</option>
-            </select>
+            </select> -->
         <div class="mt-8 w-full text-center flex flex-col items-center paper max-w-4xl">
             <h2 class="text-2xl font-medium leading-tight text-primary text-center">Recent Transactions:</h2>
             <div class="mt-2 w-full sm:w-3/4 lg:w-2/3">
@@ -84,7 +84,7 @@
                     <p>Casharoo: Making cents (and dollars) of your expenses. 🎉"</p>
                 </div>
                 <div>
-                    <a href="/accounts/signup" class="btn-main">
+                    <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn-main">
                         Get Started
                     </a>
                 </div>
