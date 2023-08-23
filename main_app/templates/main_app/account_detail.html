@@ -39,7 +39,11 @@
         <tr class="group {% cycle 'bg-gray-100' 'bg-white' %}">
           <td class="ml-2 text-center">{{ transaction.title }}</td>
           <td class="text-gray-500 ml-2 text-center">{{ transaction.date }}</td>
-          <td class="ml-2 text-center">${{ transaction.amount }}</td>
+          {%if transaction.transaction_type == "credit"%}
+          <td class="px-4 py-2">{{ transaction.amount }}</td>
+          {% else %}
+          <td class="px-4 py-2">-{{ transaction.amount }}</td>
+          {% endif %}
           <td class="p-0">
             <div class="h-full flex items-center justify-center">
               <a class="invisible group-hover:visible btn-main-sm"
